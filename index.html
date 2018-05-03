@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title>Сотрудники</title>
+    <!--<link rel="stylesheet" href="style.css">-->
+</head>
+<body>
+<div class="page" ng-controller="controller">
+    <div class="nav">
+        <ul>
+            <li class="division" ng-repeat="button in modes">
+                <input id = "{{button.value}}" class="divRadio" type="radio" ng-model="data.mode" value="{{button.value}}">
+                <label for="{{button.value}}">{{button.label}}</label>
+            </li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="menu" ng-switch on="data.mode">
+            <div ng-switch-when="Employees">
+                <ul>
+                    <p class="department"></p>
+                    <li class="employee" ng-repeat="employee in employeesList">
+                        {{employee}}
+                    </li>
+                </ul>
+            </div>
+
+            <div ng-switch-when="Positions">
+                <ul>
+                    <li class="position" ng-repeat="position in positionsList">
+                        {{position}}
+                    </li>
+                </ul>
+            </div>
+
+            <div ng-switch-when="Departments">
+                <ul>
+                    <li class="department" ng-repeat="department in departmentsList">
+                        {{department}}
+                    </li>
+                </ul>
+            </div>
+
+            <div ng-switch-when="default">
+
+            </div>
+        </div>
+
+        <div class="card"></div>
+    </div>
+</div>
+
+<script src="js/angular-1.2.32/angular.js"></script>
+<script src="js/divisions.js"></script>
+</body>
+</html>
