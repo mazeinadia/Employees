@@ -1,0 +1,5 @@
+<div ng-repeat="mode in modes"  class="nav">
+    <input id="{{mode.value}}" type="radio" ng-model="data.mode"
+           value="{{mode.value}}">
+    <label for="{{mode.value}}">{{ mode.text }}</label>
+</div>
