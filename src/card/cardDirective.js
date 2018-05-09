@@ -1,10 +1,20 @@
 app.directive('cardDirective', function () {
     return {
         restrict: 'E',
-        template: function (elem, attrs){
-            return '<employee-card-directive text ="'+attrs.data+'" ></employee-card-directive>'
-        }
-        /*templateUrl: function (elem, attrs) {
+        link: function (scope, elem, attrs) {
+            console.log('work hyi');
+            console.log(attrs)
+            console.log(scope[attrs['dat']])
+        },
+        template:  '<employee-card-directive></employee-card-directive>'
+        /*
+        name: 'рабочий',
+            date:  '2018-03-01',
+            position: 'pos',
+            department: 2,
+            phone: '123456789',
+            email
+        templateUrl: function (elem, attrs) {
             console.log('in link');
             console.log(attrs.mode);
             switch (attrs.mode) {

@@ -2,28 +2,27 @@
     <form>
         <label for="name" class="fieldLabel">ФИО сотрудника</label>
         <p><input id="name" type="text" class="name"
-                  ng-model="employee.name" required></p>
+                  ng-model="emp.name" required></p>
 
         <label for="date" class="fieldLabel">Дата приема на работу</label>
         <p><input id="date" type="date" class="date"
-                  ng-model="employee.date" required></p>
+                  ng-model="emp.date"></p>
 
         <label for="position" class="fieldLabel">Должность</label>
-        <p><select id="position" class="position"
-                   ng-model="employee.position" required></select></p>
+        <p><select id="position" class="position" ng-model="emp.position" required
+            ng-options="position.name for position in positions track by position.name"></select></p>
 
-        <label for="department" class="fieldLabel">ФОтдел</label>
-        <p><select id="department" class="department"
-                   ng-model="employee.department" required></select></p>
+        <label for="department" class="fieldLabel">Отдел</label>
+        <p><select id="department" class="department" ng-model="emp.department"
+                   ng-options="department.name for department in departments track by department.name" required></select></p>
 
         <label for="phone" class="fieldLabel">Номер телефона</label>
-        <p><input id="phone" type="number" class="phone"
-                  ng-pattern="/\d\d/\d\d/\d\d\d\d/"
-                  ng-model="employee.phone" required></p>
+        <p><input id="phone" type="text" class="phone"
+                  ng-model="emp.phone" required ></p>
 
         <label for="email" class="fieldLabel">E-mail</label>
         <p><input id="email" type="email" class="email"
-                  ng-model="employee.email" required></p>
+                  ng-model="emp.email"  required></p>
 
         <input type="submit" ng-click="save(employee, employeeForm)"
                value="Сохранить">

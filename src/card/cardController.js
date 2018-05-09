@@ -1,7 +1,22 @@
 app.controller('cardController', function ($compile, $scope) {
+
+    $scope.positions = [
+        {
+            text: 'позиция'
+        }
+    ];
+
+
     $scope.data = {};
 
 
+
+    /*$scope.getCard = function() {
+        console.log($scope.data.changingNeeded);
+        if ($scope.data.changingNeeded!== undefined) {
+            return '<card-directive></card-directive>'
+        }
+    };*/
 
     $scope.additionNeeded = function () {
         console.log('try to add');
@@ -15,9 +30,15 @@ app.controller('cardController', function ($compile, $scope) {
         $compile(card)($scope);
     };
 
-    $scope.getCardToChange = function () {
-        if ($scope.data.changingNeeded !== undefined) {
-            return 'src/employee/employeeCard.html'
+    $scope.changingNeeded = function (key) {
+        console.log(key);
+        console.log($scope.data.checked);
+        if ($scope.data.checked === key.phone) {
+            let mode = $scope.data.mode;
+            let card = angular.element('<card-directive mode="' + mode + '" data="' + key.phone + '"></card-directive>');
+            let content = angular.element(document.querySelector('.content'));
+            content.append(card);
+            $compile(card)($scope);
         }
     }
 });

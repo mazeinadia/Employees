@@ -1,26 +1,56 @@
 app.controller('listController', function ($compile, $scope) {
     $scope.departments = [
         {
-            text: 'департемент'
-        }
-    ];
-    $scope.employees = [
-        {
-            text: 'рабочий',
-            department: 2
+            name: 3,
+            parent: 'вышестоящий'
         },
         {
-            text: 'рабочий2',
-            department: 1
+            name: 2,
+            parent: 'вышестоящий'
         },
         {
-            text: 'рабочий1',
-            department: 1
+            name: 1,
+            parent: 'вышестоящий'
         }
     ];
     $scope.positions = [
         {
-            text: 'позиция'
+            name: 3,
+            parent: 'вышестоящий'
+        },
+        {
+            name: 2,
+            parent: 'вышестоящий'
+        },
+        {
+            name: 1,
+            parent: 'вышестоящий'
+        }
+    ];
+    $scope.employees = [
+        {
+            name: 'рабочий',
+            date:  '2018-03-01',
+            position: $scope.positions[1],
+            department: $scope.departments[1],
+            phone: '123456789',
+            email: 'mail@mail.ru'
+        },
+        {
+            name: 'рабочий2',
+            date:  '2018-03-01',
+            position: $scope.positions[0],
+            department:  $scope.departments[0],
+            phone: '323456789',
+            email: 'mail3@mail.ru'
+        },
+        {
+            name: 'рабочий1',
+            date:  '2018-03-01',
+            position: $scope.positions[2],
+            department:  $scope.departments[2],
+            phone: '223456789',
+            email: 'mail2@mail.ru'
         }
     ];
 
@@ -44,6 +74,7 @@ app.controller('listController', function ($compile, $scope) {
     ];
 
     $scope.search = {};
+    $scope.selected = $scope.departments[0];
 
     $scope.printData = function() {
         console.log($scope.search)
@@ -67,14 +98,6 @@ app.controller('listController', function ($compile, $scope) {
         }
     };
 
-    $scope.getCard = function() {
-        console.log($scope.data.changingNeeded);
-        if ($scope.data.changingNeeded!== undefined) {
-            return '<card-directive></card-directive>'
-        }
-    };
-
-
     $scope.additionNeeded = function () {
         console.log('try to add');
         let mode = $scope.data.mode;
@@ -87,13 +110,13 @@ app.controller('listController', function ($compile, $scope) {
         $compile(card)($scope);
     };
 
-    $scope.changingNeeded = function (key) {
-        if ($scope.data.checked === key) {
-            let mode = $scope.data.mode;
-            let card = angular.element('<card-directive mode="' + mode + '" data="' + key + '"></card-directive>');
-            let content = angular.element(document.querySelector('.content'));
-            content.append(card);
-            $compile(card)($scope);
-        }
+    $scope.data = {};
+    $scope.changingNeeded = function (employee) {
+        let mode = $scope.data.mode;
+        console.log(employee);
+        let card = angular.element('<employee-card-directive>');
+        let content = angular.element(document.querySelector('.content'));
+        content.append(card);
+        $compile(card)($scope);
     }
 });

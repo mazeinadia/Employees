@@ -1,13 +1,10 @@
-<div ng-repeat="employee in employees | filter:search.text | orderBy:['department', 'text'] | groupBy: 'department'">
+<div ng-repeat="employee in employees | filter:search.name | orderBy:['department', 'name'] | groupBy: 'department'">
     <label ng-show="employee.department_CHANGED">{{employee.department}}</label>
     <ul>
         <li>
-            <input id="{{employee}}" type="radio" ng-change="changingNeeded(employee.text)"
-                   ng-model="data.checked"
-                   value="{{employee.text}}">
-            <label for="{{employee}}">{{employee.text}}</label>
+            <input id="{{employee.phone}}" type="radio" ng-model="data.checked"
+                   ng-change="changingNeeded(employee)" value="{{employee}}">
+            <label for="{{employee.phone}}">{{employee.name}}</label>
         </li>
     </ul>
 </div>
-
-<div ng-include="getCardToChange()"></div>
