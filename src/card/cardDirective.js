@@ -1,11 +1,6 @@
 app.directive('cardDirective', function () {
     return {
         restrict: 'E',
-        link: function (scope, elem, attrs) {
-            console.log('work hyi');
-            console.log(attrs)
-            console.log(scope[attrs['dat']])
-        },
         template:  '<employee-card-directive></employee-card-directive>'
         /*
         name: 'рабочий',

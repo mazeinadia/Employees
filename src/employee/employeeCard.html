@@ -6,22 +6,24 @@
 
         <label for="date" class="fieldLabel">Дата приема на работу</label>
         <p><input id="date" type="date" class="date"
-                  ng-model="emp.date"></p>
+                  ng-model="emp.date" required></p>
 
         <label for="position" class="fieldLabel">Должность</label>
-        <p><select id="position" class="position" ng-model="emp.position" required
-            ng-options="position.name for position in positions track by position.name"></select></p>
+        <p><select id="position" class="position" ng-model="emp.position"
+                   ng-options="position.name for position in positions track by position.name"
+                   required></select></p>
 
         <label for="department" class="fieldLabel">Отдел</label>
         <p><select id="department" class="department" ng-model="emp.department"
-                   ng-options="department.name for department in departments track by department.name" required></select></p>
+                   ng-options="department.name for department in departments track by department.name"
+                   required></select></p>
 
         <label for="phone" class="fieldLabel">Номер телефона</label>
-        <p><input id="phone" type="text" class="phone"
-                  ng-model="emp.phone" required ></p>
+        <p><input id="phone" type="text" class="phone" ng-model="emp.phone" required></p>
 
         <label for="email" class="fieldLabel">E-mail</label>
-        <p><input id="email" type="email" class="email"
+        <p><input id="email" type="email" class="email" placeholder="some@example.com"
+                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
                   ng-model="emp.email"  required></p>
 
         <input type="submit" ng-click="save(employee, employeeForm)"

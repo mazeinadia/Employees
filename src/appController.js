@@ -76,10 +76,6 @@ app.controller('listController', function ($compile, $scope) {
     $scope.search = {};
     $scope.selected = $scope.departments[0];
 
-    $scope.printData = function() {
-        console.log($scope.search)
-    };
-
     $scope.getSearch = function () {
         if ($scope.data.mode !== undefined){
             return 'src/search/search.html'
