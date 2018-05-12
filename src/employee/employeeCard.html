@@ -1,4 +1,4 @@
-<div>
+<div class="card employee-card">
     <form>
         <label for="name" class="fieldLabel">ФИО сотрудника</label>
         <p><input id="name" type="text" class="name"
@@ -15,7 +15,7 @@
 
         <label for="department" class="fieldLabel">Отдел</label>
         <p><select id="department" class="department" ng-model="emp.department"
-                   ng-options="department.name for department in departments track by department.name"
+                   ng-options="department.name for department in data.departments track by department.name"
                    required></select></p>
 
         <label for="phone" class="fieldLabel">Номер телефона</label>

@@ -1,64 +1,13 @@
-app.controller('listController', function ($compile, $scope) {
-    $scope.departments = [
-        {
-            name: 3,
-            parent: 'вышестоящий'
-        },
-        {
-            name: 2,
-            parent: 'вышестоящий'
-        },
-        {
-            name: 1,
-            parent: 'вышестоящий'
-        }
-    ];
-    $scope.positions = [
-        {
-            name: 3,
-            parent: 'вышестоящий'
-        },
-        {
-            name: 2,
-            parent: 'вышестоящий'
-        },
-        {
-            name: 1,
-            parent: 'вышестоящий'
-        }
-    ];
-    $scope.employees = [
-        {
-            name: 'рабочий',
-            date:  '2018-03-01',
-            position: $scope.positions[1],
-            department: $scope.departments[1],
-            phone: '123456789',
-            email: 'mail@mail.ru'
-        },
-        {
-            name: 'рабочий2',
-            date:  '2018-03-01',
-            position: $scope.positions[0],
-            department:  $scope.departments[0],
-            phone: '323456789',
-            email: 'mail3@mail.ru'
-        },
-        {
-            name: 'рабочий1',
-            date:  '2018-03-01',
-            position: $scope.positions[2],
-            department:  $scope.departments[2],
-            phone: '223456789',
-            email: 'mail2@mail.ru'
-        }
-    ];
-
-
-
+app.controller('appController', function ($scope) {
     $scope.data = {};
+    $scope.data.departments = [];
+    $scope.data.positions = [];
+    $scope.data.employees = [];
+    $scope.search = {};
+    $scope.root = {};
+    $scope.data.cardNeeded = false;
 
-    $scope.modes = [
+    $scope.data.modes = [
         {
             value: 'employee',
             text: 'Сотрудники'
@@ -73,17 +22,15 @@ app.controller('listController', function ($compile, $scope) {
         }
     ];
 
-    $scope.search = {};
-    $scope.selected = $scope.departments[0];
+
 
     $scope.getSearch = function () {
         if ($scope.data.mode !== undefined){
-            return 'src/search/search.html'
+            return 'src/list/search/search.html'
         }
-
     };
 
-    $scope.getContent = function() {
+    $scope.getList = function() {
         switch ($scope.data.mode) {
             case 'employee':
                 return 'src/employee/employeesList.html';
@@ -94,25 +41,80 @@ app.controller('listController', function ($compile, $scope) {
         }
     };
 
-    $scope.additionNeeded = function () {
-        console.log('try to add');
-        let mode = $scope.data.mode;
-        console.log(mode);
-        let card = angular.element('<card-directive mode="' + mode + '"></card-directive>');
-        console.log(card);
+    $scope.getCard = function () {
+        if ($scope.data.cardNeeded) {
+            switch ($scope.data.mode) {
+                case 'employee':
+                    return 'src/employee/employeeCard.html';
+                case 'department':
+                    return 'src/department/departmentCard.html';
+                case 'position':
+                    return 'src/position/positionCard.html';
+            }
+            $scope.data.cardNeeded = false
+        }
+    };
+
+
+    //$scope.selected = $scope.departments[0];
+    /*$scope.printData = function() {
+        console.log($scope.search)
+    };*/
+
+    /*$scope.setTestData = function () {
+        storage.setTestData();
+        $scope.modes.forEach((mode) => {
+            $scope[mode.value+'s'] = storage.getAllEntitiesOneType(mode.value);
+        });
+        alert('БД заполнена тестовыми данными')
+    };
+
+    $scope.clearDB = function () {
+        storage.clear();
+        alert('БД очищена')
+    };*/
+
+    /*function deleteOldCard() {
         let content = angular.element(document.querySelector('.content'));
-        console.log(content);
+        let oldCard = content.find('card-directive');
+        oldCard.remove();
+        oldCard = content.find('employee-card-directive');
+        oldCard.remove();
+    }
+
+    $scope.additionNeeded = function () {
+        deleteOldCard();
+        $scope.data.addition = true;
+        let mode = $scope.data.mode;
+        let card = angular.element('<card-directive mode="' + mode + '"></card-directive>');
+        let content = angular.element(document.querySelector('.content'));
         content.append(card);
         $compile(card)($scope);
     };
 
-    $scope.data = {};
-    $scope.changingNeeded = function (employee) {
-        let mode = $scope.data.mode;
-        console.log(employee);
+
+    $scope.changingNeeded = function () {
+        deleteOldCard();
+        log($scope.data.checked);
         let card = angular.element('<employee-card-directive>');
         let content = angular.element(document.querySelector('.content'));
         content.append(card);
         $compile(card)($scope);
+    };*/
+
+    /*function addChildNodes(parent, parentElem) {
+        $scope.departments.forEach((department) => {
+            if (department.parent === parent.name)
+            {
+                let node = angular.element('<department-node>');
+                parentElem.append(node);
+                addChildNodes(department, node);
+            }
+        })
     }
+
+    $scope.department.addRootNode = function () {
+        let list = angular.element(document.querySelector('.departments'));
+        addChildNodes(undefined, list);
+    }*/
 });

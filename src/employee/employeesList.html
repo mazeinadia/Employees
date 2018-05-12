@@ -1,4 +1,4 @@
-<div ng-repeat="employee in employees | filter:search.name | orderBy:['department', 'name'] | groupBy: 'department'">
+<div ng-repeat="employee in data.employees | filter:search.name | orderBy:['department', 'name'] | groupBy: 'department'">
     <label ng-show="employee.department_CHANGED">{{employee.department}}</label>
     <ul>
         <li>

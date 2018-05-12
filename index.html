@@ -6,10 +6,12 @@
     <!--<link rel="stylesheet" href="style.css">-->
 </head>
 <body>
-    <div class="content" ng-controller="listController">
+    <div class="content" ng-controller="appController">
         <div divisions-list-directive></div>
+        <db></db>
         <div ng-include="getSearch()"></div>
-        <div ng-include="getContent()"></div>
+        <div ng-include="getList()"></div>
+        <div ng-include="getCard()" ng-controller="cardController"></div>
     </div>
 
     <script src="node_modules/angular/angular.js"></script>

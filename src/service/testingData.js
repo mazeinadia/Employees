@@ -1,31 +1,39 @@
-
-
 const DEPARTMENTS = [
     {
-        name: 3,
-        parent: 'вышестоящий'
+        name: 'Отдел1'
     },
     {
-        name: 2,
-        parent: 'вышестоящий'
+        name: 'Отдел2'
     },
     {
-        name: 1,
-        parent: 'вышестоящий'
+        name: 'Отдел1.1',
+        parent: 'Отдел1'
+    },
+    {
+        name: 'Отдел1.2',
+        parent: 'Отдел1'
+    },
+    {
+        name: 'Отдел1.1.1',
+        parent: 'Отдел1.1'
     }
 ];
 const POSITIONS = [
     {
-        name: 3,
-        parent: 'вышестоящий'
+        name: 'Должность1',
+        salary: 10500
     },
     {
-        name: 2,
-        parent: 'вышестоящий'
+        name: 'Должность2',
+        salary: 200
     },
     {
-        name: 1,
-        parent: 'вышестоящий'
+        name: 'Должность3',
+        salary: 150000
+    },
+    {
+        name: 'Должность4',
+        salary: 3500000
     }
 ];
 const EMPLOYEES = [
@@ -34,7 +42,7 @@ const EMPLOYEES = [
         date:  '2018-03-01',
         position: POSITIONS[1],
         department: DEPARTMENTS[1],
-        phone: '123456789',
+        phone: '+7(123)456-7890',
         email: 'mail@mail.ru'
     },
     {
@@ -42,7 +50,7 @@ const EMPLOYEES = [
         date:  '2018-03-01',
         position: POSITIONS[0],
         department:  DEPARTMENTS[0],
-        phone: '323456789',
+        phone: '+7(321)456-7890',
         email: 'mail3@mail.ru'
     },
     {
@@ -50,7 +58,7 @@ const EMPLOYEES = [
         date:  '2018-03-01',
         position: POSITIONS[2],
         department:  DEPARTMENTS[2],
-        phone: '223456789',
+        phone: '+7(213)456-7890',
         email: 'mail2@mail.ru'
     }
 ];
