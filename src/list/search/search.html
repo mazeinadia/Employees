@@ -1,6 +1,5 @@
 <div class="search">
-    <input ng-model="search.name" ng-keyup="printData()" type="text" class="searchInput">
-    <input type="button" class="searchButton">
-    <input type="button" class="addButton"
-           ng-click="additionNeeded()">
+    <input ng-model="data.search.name" type="text" class="searchInput">
+    <input type="submit" class="addButton"
+           value="+" ng-click="$ctrl.additionNeeded()">
 </div>

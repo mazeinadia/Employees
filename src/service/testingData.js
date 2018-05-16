@@ -1,21 +1,22 @@
 const DEPARTMENTS = [
     {
-        name: 'Отдел1'
+        name: 'Отдел1',
+        children:[
+            {
+                name: 'Отдел1.1',
+                children: [
+                    {
+                        name: 'Отдел1.1.1'
+                    }
+                ]
+            },
+            {
+                name: 'Отдел1.2'
+            }
+        ]
     },
     {
         name: 'Отдел2'
-    },
-    {
-        name: 'Отдел1.1',
-        parent: 'Отдел1'
-    },
-    {
-        name: 'Отдел1.2',
-        parent: 'Отдел1'
-    },
-    {
-        name: 'Отдел1.1.1',
-        parent: 'Отдел1.1'
     }
 ];
 const POSITIONS = [

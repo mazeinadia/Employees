@@ -1,5 +1,5 @@
-<div ng-repeat="employee in data.employees | filter:search.name | orderBy:['department', 'name'] | groupBy: 'department'">
-    <label ng-show="employee.department_CHANGED">{{employee.department}}</label>
+<div ng-repeat="employee in data.employees | filter: data.search.name | orderBy:['department', 'name'] | groupBy: 'department'">
+    <label ng-show="employee.department_CHANGED">{{employee.department.name}}</label>
     <ul>
         <li>
             <input id="{{employee.phone}}" type="radio" ng-model="data.checked"

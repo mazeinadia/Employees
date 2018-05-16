@@ -1,7 +1,7 @@
 app.directive('employeeCardDirective', function () {
     return {
         restrict: 'E',
-        link: function (scope, elem, attrs, modelCtrl) {
+        link: function (scope) {
             if(!scope.data.addition) {
                 scope.emp = JSON.parse(scope.data.checked);
             }

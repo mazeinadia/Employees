@@ -1,0 +1,14 @@
+<div class="card department-card">
+    <form>
+        <label for="name" class="fieldLabel">Наименование отдела</label>
+        <p><input id="name" type="text" class="name"
+                  ng-model="department.name" required></p>
+
+        <label for="parent" class="fieldLabel">Вышестоящий отдел</label>
+        <p><input id="parent" type="text" class="parent"
+                  ng-model="department.parent" required></p>
+
+        <input type="submit" ng-click="save(department)"
+               value="Сохранить">
+    </form>
+</div>

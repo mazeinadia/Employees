@@ -19,7 +19,7 @@
     "gulp-livereload": "^3.8.1"
   },
   "dependencies": {
-    "angular": "^1.2.32",
+    "angular": "^1.6.9",
     "jquery": "^3.3.1",
     "jquery.maskedinput": "^1.4.1"
   }

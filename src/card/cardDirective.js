@@ -1,26 +1,24 @@
-app.directive('cardDirective', function () {
+app.directive('cardManipulation', function ($compile) {
     return {
         restrict: 'E',
-        template:  '<employee-card-directive></employee-card-directive>'
-        /*
-        name: 'рабочий',
-            date:  '2018-03-01',
-            position: 'pos',
-            department: 2,
-            phone: '123456789',
-            email
-        templateUrl: function (elem, attrs) {
-            console.log('in link');
-            console.log(attrs.mode);
-            switch (attrs.mode) {
+        replace: true,
+        scope: {
+            mode: '=',
+            entity: '='
+        },
+        template: '<div class="card"></div>',
+        link: function (scope, element, attrs) {
+            switch (scope.mode) {
                 case 'employee':
-                    return 'src/employee/employeeCard.html';
+                    element.append('<employee-card data="entity">');
+                    break;
                 case 'department':
-                    return 'src/department/departmentCard.html';
+                    element.append('<department-card data="entity">');
                     break;
                 case 'position':
-                    return 'src/position/positionCard.html';
+                    element.append('<position-card data="entity">');
             }
-        }*/
+            $compile(element.contents())(scope);
+        }
     }
-});
+})

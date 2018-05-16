@@ -5,46 +5,32 @@ var app = angular.module("app", []);
 var log = console.log;
 'use strict';
 
-app.controller('appController', function ($scope) {
-    $scope.data = {};
-    $scope.data.departments = [];
-    $scope.data.positions = [];
-    $scope.data.employees = [];
-    $scope.search = {};
-    $scope.root = {};
-    $scope.data.cardNeeded = false;
+function appController(scope) {
+    var ctrl = this;
 
-    $scope.data.modes = [{
-        value: 'employee',
-        text: 'Сотрудники'
-    }, {
-        value: 'department',
-        text: 'Отделы'
-    }, {
-        value: 'position',
-        text: 'Должности'
-    }];
+    scope.data = {};
+    scope.data.departments = [];
+    scope.data.positions = [];
+    scope.data.employees = [];
+    scope.search = {};
+    scope.root = {};
+    scope.data.cardNeeded = false;
+}
 
-    $scope.getSearch = function () {
-        if ($scope.data.mode !== undefined) {
-            return 'src/list/search/search.html';
-        }
-    };
+app.component('appComponent', {
+    templateUrl: 'src/app/app.html',
+    controller: ['$scope', appController]
+});
+'use strict';
 
-    $scope.getList = function () {
-        switch ($scope.data.mode) {
-            case 'employee':
-                return 'src/employee/employeesList.html';
-            case 'department':
-                return 'src/department/departmentsList.html';
-            case 'position':
-                return 'src/position/positionsList.html';
-        }
-    };
+function cardController(scope) {
+    var ctrl = this;
 
-    $scope.getCard = function () {
-        if ($scope.data.cardNeeded) {
-            switch ($scope.data.mode) {
+    scope.data = scope.$parent.data;
+
+    ctrl.getCard = function () {
+        if (scope.data.cardNeeded) {
+            switch (scope.data.mode) {
                 case 'employee':
                     return 'src/employee/employeeCard.html';
                 case 'department':
@@ -52,66 +38,14 @@ app.controller('appController', function ($scope) {
                 case 'position':
                     return 'src/position/positionCard.html';
             }
-            $scope.data.cardNeeded = false;
+            scope.data.cardNeeded = false;
         }
     };
+}
 
-    //$scope.selected = $scope.departments[0];
-    /*$scope.printData = function() {
-        console.log($scope.search)
-    };*/
-
-    /*$scope.setTestData = function () {
-        storage.setTestData();
-        $scope.modes.forEach((mode) => {
-            $scope[mode.value+'s'] = storage.getAllEntitiesOneType(mode.value);
-        });
-        alert('БД заполнена тестовыми данными')
-    };
-      $scope.clearDB = function () {
-        storage.clear();
-        alert('БД очищена')
-    };*/
-
-    /*function deleteOldCard() {
-        let content = angular.element(document.querySelector('.content'));
-        let oldCard = content.find('card-directive');
-        oldCard.remove();
-        oldCard = content.find('employee-card-directive');
-        oldCard.remove();
-    }
-      $scope.additionNeeded = function () {
-        deleteOldCard();
-        $scope.data.addition = true;
-        let mode = $scope.data.mode;
-        let card = angular.element('<card-directive mode="' + mode + '"></card-directive>');
-        let content = angular.element(document.querySelector('.content'));
-        content.append(card);
-        $compile(card)($scope);
-    };
-        $scope.changingNeeded = function () {
-        deleteOldCard();
-        log($scope.data.checked);
-        let card = angular.element('<employee-card-directive>');
-        let content = angular.element(document.querySelector('.content'));
-        content.append(card);
-        $compile(card)($scope);
-    };*/
-
-    /*function addChildNodes(parent, parentElem) {
-        $scope.departments.forEach((department) => {
-            if (department.parent === parent.name)
-            {
-                let node = angular.element('<department-node>');
-                parentElem.append(node);
-                addChildNodes(department, node);
-            }
-        })
-    }
-      $scope.department.addRootNode = function () {
-        let list = angular.element(document.querySelector('.departments'));
-        addChildNodes(undefined, list);
-    }*/
+app.component('card', {
+    templateUrl: 'src/card/card.html',
+    controller: ['$scope', cardController]
 });
 'use strict';
 
@@ -175,67 +109,58 @@ app.directive('cardDirective', function () {
 });
 'use strict';
 
-app.controller('dbController', ['$scope', 'storage', function (scope, storage) {
-    scope.setTestData = function () {
+function dbController(scope, storage) {
+    var ctrl = this;
+
+    scope.data = scope.$parent.data;
+
+    ctrl.setTestData = function () {
         storage.setTestData();
         scope.data.modes.forEach(function (mode) {
             scope.data[mode.value + 's'] = storage.getAllEntitiesOneType(mode.value);
         });
+        log(scope.data.departments);
         alert('БД заполнена тестовыми данными');
     };
 
-    scope.clearDB = function () {
+    ctrl.clearDB = function () {
         storage.clear();
         alert('БД очищена');
     };
-}]);
-'use strict';
+}
 
-app.directive('db', function () {
-    return {
-        restrict: 'E',
-        templateUrl: 'src/DB/dbTemplate.html'
-    };
-});
-/*app.directive('departmentNode', function () {
-    return {
-        restrict: 'E',
-        link: function (scope, elem, attrs, modelCtrl) {
-            if(!scope.data.addition) {
-                scope.emp = JSON.parse(scope.data.checked);
-            }
-            $('#phone').mask('+7(999)999-9999');
-            scope.data.addition = false;
-        },
-        templateUrl: 'src/department/departmentNode.html'
-    }
-});*/
-"use strict";
-'use strict';
-
-app.filter('parentFilter', function () {
-    return function (department, parentShould) {
-        log('dep: ' + department);
-        log('parent: ' + parentShould);
-        if (department.parent === parentShould) {
-            return department;
-        }
-    };
+app.component('db', {
+    templateUrl: 'src/db/db.html',
+    controller: ['$scope', 'storage', dbController]
 });
 'use strict';
 
-app.directive('divisionsListDirective', function () {
-    return {
-        restrict: 'A',
-        templateUrl: 'src/divisions/divisionsList.html'
-    };
+function divisionListController(scope) {
+    var ctrl = this;
+
+    scope.data = scope.$parent.data;
+    scope.data.modes = [{
+        value: 'employee',
+        text: 'Сотрудники'
+    }, {
+        value: 'department',
+        text: 'Отделы'
+    }, {
+        value: 'position',
+        text: 'Должности'
+    }];
+}
+
+app.component('divisionList', {
+    templateUrl: 'src/divisions/divisionsList.html',
+    controller: ['$scope', divisionListController]
 });
 'use strict';
 
 app.directive('employeeCardDirective', function () {
     return {
         restrict: 'E',
-        link: function link(scope, elem, attrs, modelCtrl) {
+        link: function link(scope) {
             if (!scope.data.addition) {
                 scope.emp = JSON.parse(scope.data.checked);
             }
@@ -285,6 +210,35 @@ app.filter('groupBy', function () {
 
                         return filtered;
             };
+});
+'use strict';
+
+function listController(scope) {
+    var ctrl = this;
+
+    scope.data = scope.$parent.data;
+
+    ctrl.getList = function () {
+        switch (scope.data.mode) {
+            case 'employee':
+                return 'src/employee/employeesList.html';
+            case 'department':
+                return 'src/department/departmentsList.html';
+            case 'position':
+                return 'src/position/positionsList.html';
+        }
+    };
+
+    ctrl.getSearch = function () {
+        if (scope.data.mode !== undefined) {
+            return 'src/list/search/search.html';
+        }
+    };
+}
+
+app.component('list', {
+    templateUrl: 'src/list/list.html',
+    controller: ['$scope', listController]
 });
 'use strict';
 
@@ -371,18 +325,17 @@ app.factory('storage', function () {
 'use strict';
 
 var DEPARTMENTS = [{
-    name: 'Отдел1'
+    name: 'Отдел1',
+    children: [{
+        name: 'Отдел1.1',
+        children: [{
+            name: 'Отдел1.1.1'
+        }]
+    }, {
+        name: 'Отдел1.2'
+    }]
 }, {
     name: 'Отдел2'
-}, {
-    name: 'Отдел1.1',
-    parent: 'Отдел1'
-}, {
-    name: 'Отдел1.2',
-    parent: 'Отдел1'
-}, {
-    name: 'Отдел1.1.1',
-    parent: 'Отдел1.1'
 }];
 var POSITIONS = [{
     name: 'Должность1',
@@ -419,3 +372,64 @@ var EMPLOYEES = [{
     phone: '+7(213)456-7890',
     email: 'mail2@mail.ru'
 }];
+'use strict';
+
+function departmentController(scope) {
+    var ctrl = this;
+
+    ctrl.change = function () {};
+}
+
+app.component('department', {
+    templateUrl: 'src/department/departmentNode.html',
+    controller: ['$scope', departmentController],
+    bindings: {
+        dep: '<'
+    }
+});
+'use strict';
+
+function departmentListController($scope) {
+    var ctrl = this;
+
+    ctrl.data = $scope.$parent.data;
+}
+
+app.component('departmentList', {
+    template: '<ul>' + '   <node ' + '       ng-repeat="dep in $ctrl.collection | filter: $ctrl.data.search.name | orderBy: \'name\'" ' + '       member="dep">' + '   </node>' + '</ul>',
+    controller: departmentListController,
+    bindings: {
+        collection: '<'
+    }
+});
+'use strict';
+
+app.directive('node', function ($compile) {
+    return {
+        restrict: 'E',
+        replace: true,
+        scope: {
+            member: '='
+        },
+        templateUrl: 'src/department/departmentNode.html',
+        link: function link(scope, element, attrs) {
+            if (angular.isArray(scope.member.children)) {
+                element.append('<department-list collection="member.children">');
+                //'<tree collection="member.children"></tree>');
+                $compile(element.contents())(scope);
+                log(element.html());
+            }
+        }
+    };
+});
+'use strict';
+
+app.directive('tree', function () {
+    return {
+        restrict: 'E',
+        scope: {
+            collection: '='
+        },
+        template: '<ul><node ng-repeat="member in collection | filter: data.search.name | orderBy: ' + '\'' + 'name' + '\'' + '" member="member"></node></ul>'
+    };
+});
