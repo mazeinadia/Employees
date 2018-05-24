@@ -1,3 +1,5 @@
 <div ng-include="$ctrl.getSearch()"></div>
 <div ng-include="$ctrl.getList()"></div>
-<div ng-include="$ctrl.getCard()"></div>
+<div ng-if="$ctrl.card">
+    <div ng-include="$ctrl.getCard()"></div>
+</div>
