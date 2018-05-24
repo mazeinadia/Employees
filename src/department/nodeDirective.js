@@ -8,7 +8,7 @@ app.directive('node', function ($compile) {
         templateUrl: 'src/department/departmentNode.html',
         link: function (scope, element, attrs) {
             if (angular.isArray(scope.member.children)) {
-                element.append('<department-list collection="member.children">');
+                element.append('<department-list data="member.children">');
                 $compile(element.contents())(scope);
             }
         }

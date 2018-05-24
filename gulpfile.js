@@ -21,14 +21,20 @@ gulp.task('js', () =>
     .pipe(connect.reload())
 );
 
-gulp.task('html', () =>
+gulp.task('main-html', () =>
     gulp.src('index.html')
+        .pipe(connect.reload())
+);
+
+gulp.task('html', () =>
+    gulp.src('src/**/*.html')
         .pipe(connect.reload())
 );
 
 gulp.task('watch', () => {
     gulp.watch('src/**/*.js', ['js']);
-    gulp.watch('index.html', ['html'])
+    gulp.watch('index.html', ['main-html']);
+    gulp.watch('src/**/*.html', ['html']);
 });
 
-gulp.task('default', ['connect', 'js', 'html', 'watch']);
+gulp.task('default', ['connect', 'js', 'html', 'main-html', 'watch']);

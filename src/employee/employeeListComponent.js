@@ -1,4 +1,4 @@
-function departmentListController() {
+function employeeListController() {
     let ctrl = this;
     ctrl.search = {};
 
@@ -11,9 +11,9 @@ function departmentListController() {
 
 }
 
-app.component('departmentList', {
-    templateUrl: 'src/department/departmentList.html',
-    controller: departmentListController,
+app.component('employeeList', {
+    templateUrl: 'src/employee/employeeList.html',
+    controller: employeeListController,
     bindings: {
         data: '<',
         search: '<'

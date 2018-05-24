@@ -1,4 +1,1 @@
-<div class="search">
-    <input ng-model="data.search.name" type="text" class="searchInput">
-    <input type="submit" class="addButton" ng-click="data.addCard()" value="+">
-</div>
+<input type="text" class="searchInput" ng-model="$ctrl.text" ng-change="$ctrl.handleTextChange()">

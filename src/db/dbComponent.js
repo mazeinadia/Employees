@@ -1,24 +1,37 @@
-function dbController(scope, storage) {
+function dbController() {
     let ctrl = this;
 
-    scope.data = scope.$parent.data;
+    ctrl.dataIsLoaded = false;
 
-    ctrl.setTestData = function () {
-        storage.setTestData();
-        scope.data.modes.forEach((mode) => {
-            scope.data[mode.value+'s'] = (storage.getAllEntitiesOneType(mode.value));
-        });
-        log(scope.data.departments);
-        alert('БД заполнена тестовыми данными')
+
+    ctrl.handleLoad = function () {
+        if (!ctrl.dataIsLoaded){
+            
+            ctrl.onLoad();
+            ctrl.dataIsLoaded = true;
+            alert('БД заполнена тестовыми данными')
+        } else {
+            alert('БД уже была заполнена тестовыми данными')
+        }
     };
 
-    ctrl.clearDB = function () {
-        storage.clear();
-        alert('БД очищена')
+    ctrl.handleClear = function () {
+        if (ctrl.dataIsLoaded) {
+            ctrl.onClear();
+            ctrl.dataIsLoaded = false;
+            alert('БД очищена')
+        } else {
+            alert('БД уже была очищена')
+        }
     };
 }
 
 app.component('db', {
     templateUrl: 'src/db/db.html',
-    controller: ['$scope', 'storage', dbController]
+    controller: dbController,
+    bindings: {
+        onLoad: '&',
+        onClear: '&'//,
+        //modes: '<'
+    }
 });

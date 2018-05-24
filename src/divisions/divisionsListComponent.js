@@ -1,8 +1,7 @@
-function divisionListController(scope) {
+function divisionListController() {
     let ctrl = this;
 
-    scope.data = scope.$parent.data;
-    scope.data.modes = [
+    ctrl.modes = [
         {
             value: 'employee',
             text: 'Сотрудники'
@@ -16,10 +15,18 @@ function divisionListController(scope) {
             text: 'Должности'
         }
     ];
-
+    ctrl.isChosen = function(value) {
+        return (value === ctrl.division)
+    };
+    /*ctrl.$onChanges = function() {
+        log(ctrl.data);
+    }*/
 }
 
 app.component('divisionList', {
     templateUrl: 'src/divisions/divisionsList.html',
-    controller: ['$scope', divisionListController]
+    controller: [divisionListController],
+    bindings: {
+        data: '@'
+    }
 });

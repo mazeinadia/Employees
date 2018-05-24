@@ -1,5 +1,6 @@
-<div ng-repeat="mode in data.modes"  class="nav">
-    <input id="{{mode.value}}" type="radio" ng-model="data.mode"
-           value="{{mode.value}}">
+<div ng-repeat="mode in $ctrl.modes"  class="nav">
+    <input type="radio" id="{{mode.value}}" name="division-mode"
+           division="{{mode.value}}" value="{{mode.value}}" data="{{$ctrl.data}}"
+           ng-model="$ctrl.division" chosen="{{$ctrl.isChosen(mode.value)}}">
     <label for="{{mode.value}}">{{mode.text}}</label>
 </div>

@@ -1,1 +1,4 @@
-<department-list collection="data.departments"></department-list>
+<ul>
+    <node ng-repeat="dep in $ctrl.data | filter: $ctrl.search.name | orderBy: 'name'"
+          member="dep"></node>
+</ul>
