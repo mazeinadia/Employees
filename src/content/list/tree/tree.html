@@ -1,0 +1,4 @@
+<ul class="{{$ctrl.class}}">
+    <tree-node ng-repeat="entity in $ctrl.data | filter: $ctrl.search.name | orderBy: 'name'"
+          member="entity" class="{{$ctrl.class}}" search="$ctrl.search" on-choose="$ctrl.handleChoose(value)"></tree-node>
+</ul>

@@ -44,42 +44,148 @@ app.component('appComponent', {
 });
 'use strict';
 
-app.directive('cardDirective', function ($compile) {
-    function getListTemplate(mode) {
-        switch (mode) {
-            case 'employee':
-                return '<employee-card-directive>';
-            case 'department':
-                return '';
-            case 'position':
-                return '';
-        }
-    }
-
+app.directive('card', function ($compile) {
     return {
         restrict: 'E',
-        replace: true,
-        transclude: true,
         scope: {
-            entity: '='
+            mode: '@',
+            data: '@'
         },
-        template: '<div class="content">' + '   <input type="submit" id="add">' + '</div>',
         link: function link(scope, element, attrs) {
-            log('in content directive link');
-            //compile on click?
-            var button = element.find('input');
-            log(element.html());
-            log(button.id);
-            button.on('click', function () {
-                log('btn click');
-                element.append(searchTemplate);
-                element.append(getListTemplate(scope.data.mode));
-                $compile(element.contents())(scope);
+            scope.$watch('mode', function (newMode) {
+                log(newMode);
             });
-            $compile(element.contents())(scope);
-            log(element.html());
+            var card = void 0,
+                data = void 0;
+            switch (scope.mode) {
+                case 'employee':
+                    if (scope.data) {
+                        scope.data = JSON.parse(scope.data);
+                        scope.departments = scope.data.departments;
+                        scope.departments.push({ name: '' });
+                        scope.positions = scope.data.positions;
+                        card = angular.element('<employee-card positions="positions" departments="departments">');
+                    } else {
+                        card = angular.element('<employee-card id="card">');
+                    }
+                    break;
+                case 'department':
+                    if (scope.data) {
+                        data = JSON.parse(scope.data);
+                        scope.departments = data.departments;
+                        scope.departments.push({ name: '' });
+                        card = angular.element('<department-card id="card" departments="departments">');
+                    } else {
+                        card = angular.element('<department-card id="card">');
+                    }
+                    break;
+                case 'position':
+                    card = angular.element('<position-card id="card">');
+            }
+            element.replaceWith(card);
+            $compile(card)(scope);
         }
     };
+});
+'use strict';
+
+app.directive('entity', function ($compile) {
+    return {
+        restrict: 'A',
+        scope: {
+            mode: '@',
+            entity: '=' //'@'
+        },
+        link: function link() {
+            scope.$watch('mode', function (newMode) {
+                log(newMode);
+            });
+            var card = void 0;
+            log('in card link');
+            switch (scope.mode) {
+                case 'employee':
+                    card = angular.element('<employee-card id="card" data="entity">');
+                    break;
+                case 'department':
+                    card = angular.element('<department-card id="card" data="entity">');
+                    break;
+                case 'position':
+                    card = angular.element('<position-card id="card" data="entity">');
+            }
+            element.replaceWith(card);
+            $compile(card)(scope);
+        }
+    };
+});
+'use strict';
+
+function optionsController() {
+    var ctrl = this;
+
+    ctrl.$onChanges = function (changes) {};
+}
+
+app.component('options', {
+    templateUrl: 'src/card/options.html',
+    controller: optionsController,
+    bindings: {
+        data: '<',
+        search: '@'
+    }
+});
+'use strict';
+
+function searchSelectController() {
+    var ctrl = this;
+
+    ctrl.searchChange = function (text) {
+        ctrl.searchText = { name: text };
+    };
+
+    ctrl.$onInit = function () {
+        ctrl.selectText = ctrl.selected;
+        ctrl.visibility = {};
+        ctrl.visibility.optionsVisible = false;
+        /*let searchBlock = angular.element(document.getElementsByClassName('search-select'));
+        log(searchBlock);
+          angular.element(document.getElementsByTagName('body')).on('click', function (event) {
+            log(event.target);
+            if(searchBlock.indexOf(event.target) !== -1) {
+                ctrl.optionsVisible = false;
+            }
+        });*/
+    };
+
+    ctrl.$onChanges = function () {
+        log('in search select options: ' + this.options);
+    };
+
+    ctrl.showOptions = function () {
+        log('work');
+        ctrl.visibility.optionsVisible = !ctrl.visibility.optionsVisible;
+    };
+
+    ctrl.handleChoose = function (value) {
+        ctrl.selectText = value;
+        //ctrl.visibility.optionsVisible = false;
+        //log('in search-select clicked ' + value);
+        //ctrl.showOptions();
+        log('in search-select selected ' + ctrl.selectText + ctrl.visibility.optionsVisible);
+    };
+
+    ctrl.handleTreeClick = function () {
+        ctrl.visibility.optionsVisible = !ctrl.visibility.optionsVisible;
+        log('TREE');
+    };
+}
+
+app.component('searchSelect', {
+    templateUrl: 'src/card/searchSelect.html',
+    controller: searchSelectController,
+    bindings: {
+        options: '<',
+        selected: '@'
+    }
 });
 'use strict';
 
@@ -88,21 +194,23 @@ app.directive('addEntity', function ($compile) {
         restrict: 'E',
         template: '<input type="submit" value="+" class="button" id="addEntity">',
         link: function link(scope, element, attrs) {
-            /*log('in add entity' + scope.mode);
+            log('in add entity' + scope.mode);
             scope.$watch('mode', function (value) {
                 log('in add entity mode changed to ' + value);
-            })
+                scope.mode = value;
+            });
             element.on('click', function () {
                 log('add card button clicked');
-                let content = angular.element(document.getElementById('content-container'));
-                log('in add entity ' + content.html());
-                content.append('<card mode="' + scope.mode + '">');
-                $compile()
+                var content = angular.element(document.getElementById('card'));
+                var card = angular.element('<card mode="' + scope.mode + '" data="{{data}}">');
+                content.replaceWith(card);
+                $compile(card)(scope);
             });
-            $compile(content.contents())(scope)*/
+            //$compile(content.contents())(scope)
         },
         scope: {
-            mode: '@'
+            mode: '@',
+            data: '@'
         }
     };
 });
@@ -202,6 +310,20 @@ app.component('db', {
         onLoad: '&',
         onClear: '&' //,
         //modes: '<'
+    }
+});
+'use strict';
+
+function departmentCardController() {
+    var ctrl = this;
+}
+
+app.component('departmentCard', {
+    templateUrl: 'src/department/departmentCard.html',
+    controller: departmentCardController,
+    bindings: {
+        data: '<',
+        departments: '<'
     }
 });
 'use strict';
@@ -310,6 +432,29 @@ app.component('divisionList', {
 });
 'use strict';
 
+function employeeCardController() {
+    var ctrl = this;
+
+    ctrl.$onInit = function () {
+        $('#phone').mask('+7(999)999-9999');
+    };
+
+    ctrl.$onChanges = function () {
+        log(ctrl.departments);
+    };
+}
+
+app.component('employeeCard', {
+    templateUrl: 'src/employee/employeeCard.html',
+    controller: employeeCardController,
+    bindings: {
+        data: '<',
+        departments: '<',
+        positions: '<'
+    }
+});
+'use strict';
+
 app.directive('employeeCardDirective', function () {
     return {
         restrict: 'E',
@@ -343,6 +488,38 @@ app.component('employeeList', {
     bindings: {
         data: '<',
         search: '<'
+    }
+});
+'use strict';
+
+function positionCardController() {
+    var ctrl = this;
+
+    ctrl.$onSalaryChanged = function () {
+        if (ctrl.salary) {
+            //log(ctrl.salary.length);
+            if (ctrl.salary.length > 3) {
+                var formatted = ctrl.salary.replace(/[^\d]/, '').replace(/ /g, '');
+                var length = formatted.length;
+                log(formatted);
+                while (length > 3) {
+                    length = length - 3;
+                    //log(length);
+                    formatted = formatted.slice(0, length) + ' ' + formatted.slice(length);
+                }
+                ctrl.salary = formatted;
+            } else {
+                ctrl.salary = ctrl.salary.replace(/[^\d]/, '').replace(/ /g, '');
+            }
+        }
+    };
+}
+
+app.component('positionCard', {
+    templateUrl: 'src/position/positionCard.html',
+    controller: positionCardController,
+    bindings: {
+        data: '<'
     }
 });
 'use strict';
@@ -565,4 +742,53 @@ app.component('search', {
     },
     templateUrl: 'src/content/search/search.html',
     controller: searchController
+});
+'use strict';
+
+app.directive('treeNode', function ($compile) {
+    return {
+        restrict: 'E',
+        replace: true,
+        scope: {
+            member: '=',
+            search: '=',
+            class: '@',
+            onChoose: '&'
+        },
+        templateUrl: 'src/content/list/tree/node.html',
+        link: function link(scope, element, attrs) {
+            if (angular.isArray(scope.member.children)) {
+                element.append('<tree data="member.children" search="search" class="{{class}}">');
+                $compile(element.contents())(scope);
+            }
+            element.on('click', function (event) {
+                //choose & close
+                scope.onChoose({ value: event.target.id });
+                log('in node directive clicked ' + event.target.id);
+            });
+        }
+    };
+});
+'use strict';
+
+function treeController() {
+    var ctrl = this;
+    ctrl.search = {};
+
+    ctrl.$onChanges = function (changes) {};
+
+    ctrl.handleChoose = function (value) {
+        ctrl.onChoose({ value: value });
+    };
+}
+
+app.component('tree', {
+    templateUrl: 'src/content/list/tree/tree.html',
+    controller: treeController,
+    bindings: {
+        data: '<',
+        search: '<',
+        class: '@',
+        onChoose: '&'
+    }
 });

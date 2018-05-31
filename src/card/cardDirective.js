@@ -1,39 +1,42 @@
-app.directive('cardDirective', function ($compile) {
-    function getListTemplate(mode) {
-        switch (mode) {
-            case 'employee':
-                return '<employee-card-directive>';
-            case 'department':
-                return '';
-            case 'position':
-                return '';
-        }
-    }
-
+app.directive('card', function ($compile) {
     return {
         restrict: 'E',
-        replace: true,
-        transclude: true,
         scope: {
-            entity: '='
+            mode: '@',
+            data: '@'
         },
-        template: '<div class="content">' +
-        '   <input type="submit" id="add">' +
-        '</div>',
         link: function(scope, element, attrs) {
-            log('in content directive link');
-            //compile on click?
-            let button = element.find('input');
-            log(element.html());
-            log(button.id);
-            button.on('click', function () {
-                log('btn click');
-                element.append(searchTemplate);
-                element.append(getListTemplate(scope.data.mode));
-                $compile(element.contents())(scope);
+            scope.$watch('mode', function (newMode) {
+                log(newMode)
             });
-            $compile(element.contents())(scope);
-            log(element.html());
+            let card, data;
+            switch (scope.mode) {
+                case 'employee':
+                    if (scope.data) {
+                        scope.data = JSON.parse(scope.data);
+                        scope.departments = scope.data.departments;
+                        scope.departments.push({name: ''});
+                        scope.positions = scope.data.positions;
+                        card = angular.element('<employee-card positions="positions" departments="departments">');
+                    } else {
+                        card = angular.element('<employee-card id="card">');
+                    }
+                    break;
+                case 'department':
+                    if (scope.data) {
+                        data = JSON.parse(scope.data);
+                        scope.departments = data.departments;
+                        scope.departments.push({name: ''});
+                        card = angular.element('<department-card id="card" departments="departments">');
+                    } else {
+                        card = angular.element('<department-card id="card">');
+                    }
+                    break;
+                case 'position':
+                    card = angular.element('<position-card id="card">');
+            }
+            element.replaceWith(card);
+            $compile(card)(scope);
         }
     }
 });
