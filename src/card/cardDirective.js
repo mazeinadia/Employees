@@ -3,13 +3,14 @@ app.directive('card', function ($compile) {
         restrict: 'E',
         scope: {
             mode: '@',
+            entity: '=',
             data: '@'
         },
         link: function(scope, element, attrs) {
             scope.$watch('mode', function (newMode) {
                 log(newMode)
             });
-            let card, data;
+            let card;
             switch (scope.mode) {
                 case 'employee':
                     if (scope.data) {
@@ -17,23 +18,33 @@ app.directive('card', function ($compile) {
                         scope.departments = scope.data.departments;
                         scope.departments.push({name: ''});
                         scope.positions = scope.data.positions;
-                        card = angular.element('<employee-card positions="positions" departments="departments">');
+                        if (scope.entity) {
+                            scope.entity = JSON.parse(scope.entity);
+                        }
+                        card = angular.element('<employee-card id="card" ' +
+                            'data="entity" departments="departments" positions="positions">');
                     } else {
                         card = angular.element('<employee-card id="card">');
                     }
                     break;
                 case 'department':
                     if (scope.data) {
-                        data = JSON.parse(scope.data);
-                        scope.departments = data.departments;
+                        scope.data = JSON.parse(scope.data);
+                        scope.departments = scope.data.departments;
                         scope.departments.push({name: ''});
-                        card = angular.element('<department-card id="card" departments="departments">');
+                        if (scope.entity) {
+                            scope.entity = JSON.parse(scope.entity);
+                        }
+                        card = angular.element('<department-card id="card" data="entity" departments="departments">');
                     } else {
                         card = angular.element('<department-card id="card">');
                     }
                     break;
                 case 'position':
-                    card = angular.element('<position-card id="card">');
+                    if (scope.entity) {
+                        scope.entity = JSON.parse(scope.entity);
+                    }
+                    card = angular.element('<position-card id="card" data="entity">');
             }
             element.replaceWith(card);
             $compile(card)(scope);

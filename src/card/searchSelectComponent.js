@@ -19,7 +19,9 @@ function searchSelectController() {
     };
 
     ctrl.handleChoose = function(value) {
-        ctrl.selectText = value
+        ctrl.selectText = value;
+        ctrl.selected = value;
+        ctrl.onSelectedChange({text: value})
     };
 
     ctrl.handleTreeClick = function () {
@@ -32,6 +34,8 @@ app.component('searchSelect', {
     controller: searchSelectController,
     bindings: {
         options: '<',
-        selected: '@'
+        selected: '@',
+        className: '@',
+        onSelectedChange: '&'
     }
 });

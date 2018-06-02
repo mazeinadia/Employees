@@ -3,19 +3,20 @@ function employeeListController() {
     ctrl.search = {};
 
     ctrl.$onChanges = function (changes) {
-        if (changes.search) {
-            log('CHANGE search for ' + this.search);
-            log(changes.search['name']);
-        }
-    };
-
+    }
+    
+    ctrl.handleSelectChange = function (text) {
+        ctrl.data.position = '';
+        ctrl.data.departments = '';
+    }
 }
 
 app.component('employeeList', {
     templateUrl: 'src/employee/employeeList.html',
     controller: employeeListController,
     bindings: {
-        data: '<',
-        search: '<'
+        data: '@',
+        search: '<',
+        entities: '<'
     }
 });

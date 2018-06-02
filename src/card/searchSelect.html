@@ -1,9 +1,9 @@
 <div class="search-select">
-    <span ng-bind="$ctrl.selectText"></span>
+    <span ng-model="$ctrl.selected"></span>
     <input type="button" ng-click="$ctrl.showOptions()" id="buttonShow">
     <div ng-show="$ctrl.visibility.optionsVisible" ng-hide="!$ctrl.visibility.optionsVisible">
         <search on-text-change="$ctrl.searchChange(text)"></search>
-        <tree search="$ctrl.searchText" data="$ctrl.options" class="search-select"
+        <tree search="$ctrl.searchText" data="$ctrl.options" class-name="{{$ctrl.className}}"
               on-choose="$ctrl.handleChoose(value)"
               ng-click="$ctrl.handleTreeClick()"></tree>
     </div>

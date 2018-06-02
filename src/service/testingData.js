@@ -40,25 +40,25 @@ const POSITIONS = [
 const EMPLOYEES = [
     {
         name: 'рабочий',
-        date:  '2018-03-01',
-        position: POSITIONS[1],
-        department: DEPARTMENTS[1],
+        date:  new Date('2018-03-01'),
+        position: 'Должность2',
+        department: 'Отдел2',
         phone: '+7(123)456-7890',
         email: 'mail@mail.ru'
     },
     {
         name: 'рабочий2',
         date:  '2018-03-01',
-        position: POSITIONS[0],
-        department:  DEPARTMENTS[0],
+        position: 'Должность1',
+        department:  'Отдел1',
         phone: '+7(321)456-7890',
         email: 'mail3@mail.ru'
     },
     {
         name: 'рабочий1',
         date:  '2018-03-01',
-        position: POSITIONS[2],
-        department:  DEPARTMENTS[2],
+        position: 'Должность4',
+        department:  'Отдел1.1',
         phone: '+7(213)456-7890',
         email: 'mail2@mail.ru'
     }

@@ -5,7 +5,7 @@
                   ng-model="department.name" required></p>
 
         <label for="parent" class="fieldLabel">Вышестоящий отдел</label>
-        <p><search-select id="parent" class="parent" options="$ctrl.departments"
+        <p><search-select id="parent" class-name="parent" options="$ctrl.departments"
                           selected="{{$ctrl.data.department}}"></search-select>
 
         <input type="submit" ng-click="save(department)"

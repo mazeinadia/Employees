@@ -2,32 +2,32 @@
     <form>
         <label for="name" class="fieldLabel">ФИО сотрудника</label>
         <p><input id="name" type="text" class="name"
-                  ng-model="emp.name" required></p>
+                  ng-model="$ctrl.data.name" required></p>
 
         <label for="date" class="fieldLabel">Дата приема на работу</label>
         <p><input id="date" type="date" class="date"
-                  ng-model="emp.date" required></p>
+                  ng-model="$ctrl.data.date" required></p>
 
         <label for="position" class="fieldLabel">Должность</label>
-        <p><search-select id="position" class="position"
+        <p><search-select id="position" class-name="position"
                           options="$ctrl.positions" selected="{{$ctrl.data.position}}"
-                          required></search-select></p>
+                          on-selected-change="$ctrl.handleSelectedChange(text)" required></search-select></p>
 
         <label for="department" class="fieldLabel">Отдел</label>
-        <p><search-select id="department" class="department"
+        <p><search-select id="department" class-name="department"
                           options="$ctrl.departments" selected="{{$ctrl.data.department}}"
-                          required></search-select></p>
+                          on-selected-change="$ctrl.handleSelectedChange(text)" required></search-select></p>
 
         <label for="phone" class="fieldLabel">Номер телефона</label>
-        <p><input id="phone" type="text" class="phone" ng-model="emp.phone" required
+        <p><input id="phone" type="text" class="phone" ng-model="$ctrl.data.phone" required
                   placeholder="+7(xxx)xxx-xxxx"></p>
 
         <label for="email" class="fieldLabel">E-mail</label>
         <p><input id="email" type="email" class="email" placeholder="some@example.com"
                   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
-                  ng-model="emp.email"  required></p>
+                  ng-model="$ctrl.data.email"  required></p>
 
-        <input type="submit" ng-click="save(employee, employeeForm)"
+        <input type="submit" ng-click="$ctrl.save()"
                value="Сохранить">
     </form>
 </div>

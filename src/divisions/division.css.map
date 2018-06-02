@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,IAAK;EACH,OAAO,EAAE,YAAY;EACrB,OAAO,EAAE,SAAS;EAClB,MAAM,EAAE,eAAe;;AAGzB,WAAY;EACV,OAAO,EAAE,IAAI;;AAEf,iBAAkB;EAChB,gBAAgB,EAAE,IAAI;;AAExB,UAAW;EACT,SAAS,EAAE,IAAI;EACf,MAAM,EAAE,IAAI",
+"sources": ["division.scss"],
+"names": [],
+"file": "division.css"
+}

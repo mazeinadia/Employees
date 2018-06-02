@@ -1,7 +1,7 @@
 <ul>
     <li class="position" ng-repeat="position in $ctrl.data | filter: $ctrl.search.name | orderBy:'name'">
         <input id="{{position.name}}" type="radio" ng-model="data.checked"
-               ng-change="changingNeeded(position)" value="{{position}}">
+               ng-change="changingNeeded(position)" value="{{position}}" name="positions">
         <label for="{{position.name}}">{{position.name}}</label>
     </li>
 </ul>

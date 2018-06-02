@@ -15,7 +15,7 @@ app.component('tree', {
     bindings: {
         data: '<',
         search: '<',
-        class: '@',
+        className: '@',
         onChoose: '&'
     }
 });

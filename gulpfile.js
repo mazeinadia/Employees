@@ -2,7 +2,8 @@ const gulp = require('gulp'),
     babel = require('gulp-babel'),
     concat = require('gulp-concat'),
     livereload = require('gulp-livereload'),
-    connect = require('gulp-connect');
+    connect = require('gulp-connect'),
+    sass = require('gulp-sass');
 
 gulp.task('connect', () =>
     connect.server({
@@ -31,10 +32,19 @@ gulp.task('html', () =>
         .pipe(connect.reload())
 );
 
+gulp.task('sass', () =>
+    gulp.src('src/**/*.scss')
+        .pipe(sass(/*{outputStyle: 'compressed'}*/).on('error', sass.logError))
+        .pipe(concat('bundle.css'))
+        .pipe(gulp.dest('public'))
+        .pipe(connect.reload())
+);
+
 gulp.task('watch', () => {
     gulp.watch('src/**/*.js', ['js']);
     gulp.watch('index.html', ['main-html']);
     gulp.watch('src/**/*.html', ['html']);
+    gulp.watch('src/**/*.scss', ['sass'])
 });
 
-gulp.task('default', ['connect', 'js', 'html', 'main-html', 'watch']);
+gulp.task('default', ['connect', 'js', 'html', 'main-html', 'sass', 'watch']);

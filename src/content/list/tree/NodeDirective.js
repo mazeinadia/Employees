@@ -5,13 +5,13 @@ app.directive('treeNode', function ($compile) {
         scope: {
             member: '=',
             search: '=',
-            class: '@',
+            className: '@',
             onChoose: '&'
         },
         templateUrl: 'src/content/list/tree/node.html',
         link: function (scope, element, attrs) {
             if (angular.isArray(scope.member.children)) {
-                element.append('<tree data="member.children" search="search" class="{{class}}">');
+                element.append('<tree data="member.children" search="search" class-name="{{className}}">');
                 $compile(element.contents())(scope);
             }
             element.on('click', function(event) {

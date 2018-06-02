@@ -1,0 +1,16 @@
+.nav {
+  display: inline-block;
+  padding: 10px 15px;
+  border: solid 1px black; }
+
+.nav__radio {
+  display: none; }
+
+.nav__text::hover {
+  background-color: gray; }
+
+.nav__text {
+  font-size: 18px;
+  border: none; }
+
+/*# sourceMappingURL=division.css.map */
