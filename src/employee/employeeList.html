@@ -1,10 +1,14 @@
-<div ng-repeat="employee in $ctrl.entities | filter: $ctrl.search.name | orderBy:['department', 'name'] | groupBy: 'department'">
+<div ng-repeat="employee in $ctrl.entities |
+     filter: $ctrl.search.name |
+     orderBy:['department', 'name'] |
+     groupBy: 'department'"
+     class="list list__employee">
     <label ng-show="employee.department_CHANGED">{{employee.department}}</label>
-    <ul>
+    <ul class="list">
         <li>
             <input id="{{employee.phone}}" type="radio" ng-model="data.checked"
                    change-entity="{{employee}}" mode="employee" data="{{$ctrl.data}}"
-                   value="{{employee}}" name="employees">
+                   value="{{employee}}" name="employees" class="radio">
             <label for="{{employee.phone}}">{{employee.name}}</label>
         </li>
     </ul>

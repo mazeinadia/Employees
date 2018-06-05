@@ -2,13 +2,13 @@
     <form>
         <label for="name" class="fieldLabel">Наименование должности</label>
         <p><input id="name" type="text" class="name"
-                  ng-model="position.name" required></p>
+                  ng-model="$ctrl.data.name" required></p>
 
         <label for="salary" class="fieldLabel">Базовый оклад</label>
         <p><input id="salary" type="text" class="salary" ng-change="$ctrl.$onSalaryChanged()"
-                  ng-model="$ctrl.salary" required></p>
+                  ng-model="$ctrl.data.salary" required></p>
 
-        <input type="submit" ng-click="save(position)"
+        <input type="submit" ng-click="save()"
                value="Сохранить">
     </form>
 </div>

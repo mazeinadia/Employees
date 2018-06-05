@@ -1,4 +1,4 @@
-function appController(scope, storage) {
+function appController(scope, storage, q) {
     let ctrl = this;
 
     ctrl.data = '';
@@ -16,13 +16,28 @@ function appController(scope, storage) {
             text: 'Должности'
         }
     ];
+    ctrl.loading = false;
+
     ctrl.getTestData = function() {
-        ctrl.data = {};
-        storage.setTestData();
-        ctrl.modes.forEach((mode) => {
-            ctrl.data[mode.value + 's'] = (storage.getAllEntitiesOneType(mode.value));
-        });
-        ctrl.data = JSON.stringify(ctrl.data);
+        ctrl.loading = true;
+        new Promise(function (resolve, reject) {
+            setTimeout(resolve(), 1);
+        }).then(
+            () => {
+                console.log('work');
+                ctrl.data = {};
+                storage.setTestData();
+                ctrl.modes.forEach((mode) => {
+                    ctrl.data[mode.value + 's'] = (storage.getAllEntitiesOneType(mode.value));
+                });
+                ctrl.data = JSON.stringify(ctrl.data);
+            }
+        ).then(
+            () => {
+                log(ctrl); ctrl.loading = false
+            }
+        );
+        console.log(1);
     };
 
     ctrl.clearDB = function () {
@@ -37,5 +52,5 @@ function appController(scope, storage) {
 
 app.component('appComponent', {
     templateUrl: 'src/app/app.html',
-    controller: ['$scope', 'storage', appController]
+    controller: ['$scope', 'storage', '$q', appController]
 });

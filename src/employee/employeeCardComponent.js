@@ -4,12 +4,9 @@ function employeeCardController (storage) {
     ctrl.$onInit = function () {
         $('#phone').mask('+7(999)999-9999');
         if (ctrl.data){
-            log('INIT : UPDATE');
             ctrl.toDelete = 'employee' + ctrl.data.name;
-            log(ctrl.toDelete);
             ctrl.isUpdating = true;
         } else {
-            log('INIT : ADD');
             ctrl.isUpdating = false;
         }
     };
@@ -24,11 +21,9 @@ function employeeCardController (storage) {
 
     ctrl.save = function() {
         if(ctrl.isUpdating){
-            log('i am delete' + ctrl.toDelete);
             storage.deleteEntity(ctrl.toDelete)
         }
         storage.addEntity('employee' + ctrl.data.name, ctrl.data);
-        log(storage.getAllEntitiesOneType('employee'));
     }
 }
 

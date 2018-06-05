@@ -21,7 +21,7 @@ app.directive('chooseList', function ($compile) {
                     case 'department':
                         scope.departments = scope.data.departments;
                         list = angular.element(
-                            '<department-list data="departments" search="search">'
+                            '<department-list entities="departments" search="search" data="{{data}}">'
                         );
                         break;
                     case 'position':

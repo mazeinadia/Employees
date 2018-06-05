@@ -62,6 +62,9 @@ app.factory('storage', function () {
            values.push( this.getEntity(keys[i]) );
        }
 
+       let time_ms = new Date().getTime();
+       while (new Date().getTime() < time_ms + 3000) {}
+
        return values;
    };
 
@@ -74,8 +77,40 @@ app.factory('storage', function () {
                values.push( this.getEntity(keys[i]) );
            }
        }
+
+       //let time_ms = new Date().getTime();
+       //while (new Date().getTime() < time_ms + 1000) {}
+       if (type === 'department') {
+           log(values);
+           values = listToTree(values);
+           log('after' + values);
+       }
        return values;
    };
 
    return factory;
 });
+
+function listToTree(list) {
+    let tree = getRange(undefined);
+
+    function getRange(parentName) {
+        let range = [];
+        let listLen = list.length;
+        for (let counter = 0; counter < listLen; counter++){
+            if(list[counter].parent === parentName) {
+                const elem = list[counter].name;
+                list.splice(counter, 1);
+                listLen--;
+                range.push({
+                    name: elem,
+                    children: getRange(elem)
+                    });
+                listLen = list.length;
+                counter--;
+            }
+        }
+        return range;
+    }
+    return tree;
+}

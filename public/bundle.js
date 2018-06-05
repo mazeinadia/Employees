@@ -5,45 +5,6 @@ var app = angular.module("app", []);
 var log = console.log;
 'use strict';
 
-function appController(scope, storage) {
-    var ctrl = this;
-
-    ctrl.data = '';
-    ctrl.modes = [{
-        value: 'employee',
-        text: 'Сотрудники'
-    }, {
-        value: 'department',
-        text: 'Отделы'
-    }, {
-        value: 'position',
-        text: 'Должности'
-    }];
-    ctrl.getTestData = function () {
-        ctrl.data = {};
-        storage.setTestData();
-        ctrl.modes.forEach(function (mode) {
-            ctrl.data[mode.value + 's'] = storage.getAllEntitiesOneType(mode.value);
-        });
-        ctrl.data = JSON.stringify(ctrl.data);
-    };
-
-    ctrl.clearDB = function () {
-        storage.clear();
-        ctrl.data = '';
-    };
-
-    ctrl.setMode = function (mode) {
-        ctrl.mode = mode;
-    };
-}
-
-app.component('appComponent', {
-    templateUrl: 'src/app/app.html',
-    controller: ['$scope', 'storage', appController]
-});
-'use strict';
-
 app.directive('card', function ($compile) {
     return {
         restrict: 'E',
@@ -205,41 +166,53 @@ app.component('searchSelect', {
 });
 'use strict';
 
-function dbController() {
+function appController(scope, storage, q) {
     var ctrl = this;
 
-    ctrl.dataIsLoaded = false;
+    ctrl.data = '';
+    ctrl.modes = [{
+        value: 'employee',
+        text: 'Сотрудники'
+    }, {
+        value: 'department',
+        text: 'Отделы'
+    }, {
+        value: 'position',
+        text: 'Должности'
+    }];
+    ctrl.loading = false;
 
-    ctrl.handleLoad = function () {
-        if (!ctrl.dataIsLoaded) {
-
-            ctrl.onLoad();
-            ctrl.dataIsLoaded = true;
-            alert('БД заполнена тестовыми данными');
-        } else {
-            alert('БД уже была заполнена тестовыми данными');
-        }
+    ctrl.getTestData = function () {
+        ctrl.loading = true;
+        new Promise(function (resolve, reject) {
+            setTimeout(resolve(), 1);
+        }).then(function () {
+            console.log('work');
+            ctrl.data = {};
+            storage.setTestData();
+            ctrl.modes.forEach(function (mode) {
+                ctrl.data[mode.value + 's'] = storage.getAllEntitiesOneType(mode.value);
+            });
+            ctrl.data = JSON.stringify(ctrl.data);
+        }).then(function () {
+            log(ctrl);ctrl.loading = false;
+        });
+        console.log(1);
     };
 
-    ctrl.handleClear = function () {
-        if (ctrl.dataIsLoaded) {
-            ctrl.onClear();
-            ctrl.dataIsLoaded = false;
-            alert('БД очищена');
-        } else {
-            alert('БД уже была очищена');
-        }
+    ctrl.clearDB = function () {
+        storage.clear();
+        ctrl.data = '';
+    };
+
+    ctrl.setMode = function (mode) {
+        ctrl.mode = mode;
     };
 }
 
-app.component('db', {
-    templateUrl: 'src/db/db.html',
-    controller: dbController,
-    bindings: {
-        onLoad: '&',
-        onClear: '&' //,
-        //modes: '<'
-    }
+app.component('appComponent', {
+    templateUrl: 'src/app/app.html',
+    controller: ['$scope', 'storage', '$q', appController]
 });
 'use strict';
 
@@ -326,6 +299,127 @@ app.filter('groupBy', function () {
 });
 'use strict';
 
+function dbController() {
+    var ctrl = this;
+
+    ctrl.dataIsLoaded = false;
+
+    ctrl.handleLoad = function () {
+        ctrl.onLoad();
+        /*if (!ctrl.dataIsLoaded){
+            
+            ctrl.onLoad();
+            ctrl.dataIsLoaded = true;
+            alert('БД заполнена тестовыми данными')
+        } else {
+            alert('БД уже была заполнена тестовыми данными')
+        }*/
+    };
+
+    ctrl.handleClear = function () {
+        if (ctrl.dataIsLoaded) {
+            ctrl.onClear();
+            ctrl.dataIsLoaded = false;
+            alert('БД очищена');
+        } else {
+            alert('БД уже была очищена');
+        }
+    };
+}
+
+app.component('db', {
+    templateUrl: 'src/db/db.html',
+    controller: dbController,
+    bindings: {
+        onLoad: '&',
+        onClear: '&' //,
+        //modes: '<'
+    }
+});
+'use strict';
+
+function departmentCardController() {
+    var ctrl = this;
+
+    ctrl.$onInit = function () {
+        if (ctrl.data) {
+            ctrl.toDelete = 'department' + ctrl.data.name;
+            ctrl.isUpdating = true;
+        } else {
+            ctrl.isUpdating = false;
+        }
+    };
+
+    ctrl.save = function () {
+        if (ctrl.isUpdating) {
+            storage.deleteEntity(ctrl.toDelete);
+        }
+        storage.addEntity('department' + ctrl.data.name, ctrl.data);
+    };
+}
+
+app.component('departmentCard', {
+    templateUrl: 'src/department/departmentCard.html',
+    controller: departmentCardController,
+    bindings: {
+        data: '<',
+        departments: '<'
+    }
+});
+'use strict';
+
+function departmentListController() {
+    var ctrl = this;
+    ctrl.search = {};
+
+    ctrl.$onChanges = function (changes) {
+        if (changes.search) {
+            log('CHANGE search for ' + this.search);
+            log(changes.search['name']);
+        }
+        if (changes.entities) {
+            log('deps');
+            log(ctrl.entities);
+        }
+    };
+}
+
+app.component('departmentList', {
+    templateUrl: 'src/department/departmentList.html',
+    controller: departmentListController,
+    bindings: {
+        data: '@',
+        search: '<',
+        entities: '<'
+    }
+});
+'use strict';
+
+app.directive('node', function ($compile) {
+    return {
+        restrict: 'E',
+        replace: true,
+        scope: {
+            member: '=',
+            data: '@'
+        },
+        templateUrl: 'src/department/departmentNode.html',
+        link: function link(scope, element, attrs) {
+            element.find('.add').on('click', function () {
+                var content = angular.element(document.getElementById('card'));
+                scope.entity = { parent: scope.member.name };
+                var card = angular.element('<card mode="department" data="{{data}}" entity="member">');
+                content.replaceWith(card);
+            });
+            if (angular.isArray(scope.member.children)) {
+                element.append('<department-list entities="member.children">');
+                $compile(element.contents())(scope);
+            }
+        }
+    };
+});
+'use strict';
+
 app.directive('division', function ($compile) {
     return {
         restrict: 'A',
@@ -390,150 +484,39 @@ app.component('divisionList', {
 });
 'use strict';
 
-function departmentCardController() {
-    var ctrl = this;
-}
-
-app.component('departmentCard', {
-    templateUrl: 'src/department/departmentCard.html',
-    controller: departmentCardController,
-    bindings: {
-        data: '<',
-        departments: '<'
-    }
-});
-'use strict';
-
-function departmentListController() {
-    var ctrl = this;
-    ctrl.search = {};
-
-    ctrl.$onChanges = function (changes) {
-        if (changes.search) {
-            log('CHANGE search for ' + this.search);
-            log(changes.search['name']);
-        }
-    };
-}
-
-app.component('departmentList', {
-    templateUrl: 'src/department/departmentList.html',
-    controller: departmentListController,
-    bindings: {
-        data: '<',
-        search: '<'
-    }
-});
-'use strict';
-
-app.directive('node', function ($compile) {
-    return {
-        restrict: 'E',
-        replace: true,
-        scope: {
-            member: '='
-        },
-        templateUrl: 'src/department/departmentNode.html',
-        link: function link(scope, element, attrs) {
-            if (angular.isArray(scope.member.children)) {
-                element.append('<department-list data="member.children">');
-                $compile(element.contents())(scope);
-            }
-        }
-    };
-});
-'use strict';
-
-function employeeCardController(storage) {
-    var ctrl = this;
-
-    ctrl.$onInit = function () {
-        $('#phone').mask('+7(999)999-9999');
-        if (ctrl.data) {
-            log('INIT : UPDATE');
-            ctrl.toDelete = 'employee' + ctrl.data.name;
-            log(ctrl.toDelete);
-            ctrl.isUpdating = true;
-        } else {
-            log('INIT : ADD');
-            ctrl.isUpdating = false;
-        }
-    };
-
-    ctrl.$onChanges = function (changeObj) {
-        if (changeObj.data) {
-            if (ctrl.data) {
-                ctrl.data.date = new Date(ctrl.data.date);
-            }
-        }
-    };
-
-    ctrl.save = function () {
-        if (ctrl.isUpdating) {
-            log('i am delete' + ctrl.toDelete);
-            storage.deleteEntity(ctrl.toDelete);
-        }
-        storage.addEntity('employee' + ctrl.data.name, ctrl.data);
-        log(storage.getAllEntitiesOneType('employee'));
-    };
-}
-
-app.component('employeeCard', {
-    templateUrl: 'src/employee/employeeCard.html',
-    controller: ['storage', employeeCardController],
-    bindings: {
-        data: '<',
-        departments: '<',
-        positions: '<'
-    }
-});
-'use strict';
-
-app.directive('employeeCardDirective', function () {
-    return {
-        restrict: 'E',
-        link: function link(scope) {
-            if (!scope.data.addition) {
-                scope.emp = JSON.parse(scope.data.checked);
-            }
-            $('#phone').mask('+7(999)999-9999');
-            scope.data.addition = false;
-        },
-        templateUrl: 'src/employee/employeeCard.html'
-    };
-});
-'use strict';
-
-function employeeListController() {
-    var ctrl = this;
-    ctrl.search = {};
-
-    ctrl.$onChanges = function (changes) {};
-
-    ctrl.handleSelectChange = function (text) {
-        ctrl.data.position = '';
-        ctrl.data.departments = '';
-    };
-}
-
-app.component('employeeList', {
-    templateUrl: 'src/employee/employeeList.html',
-    controller: employeeListController,
-    bindings: {
-        data: '@',
-        search: '<',
-        entities: '<'
-    }
-});
-'use strict';
-
 function loaderController() {
     var ctrl = this;
 }
 
 app.component('loader', {
-    template: '<div class="loader"></div>',
+    templateUrl: 'src/loader/loader.html',
     controller: loaderController
+});
+
+app.directive('loading', function ($compile) {
+    return {
+        restrict: 'A',
+        scope: {
+            loading: '@'
+        },
+        link: function link(scope, element, attributes) {
+            scope.$watch('loading', function (value) {
+                log('loader ' + value);
+                if (value === 'true') {
+                    //show
+                    element.append('<loader>');
+                    $compile(element.contents())(scope);
+                } else {
+                    //hide
+                    var child = element.children()[0];
+                    if (child) {
+                        child.remove();
+                        $compile(element.contents())(scope);
+                    }
+                }
+            });
+        }
+    };
 });
 'use strict';
 
@@ -541,10 +524,10 @@ function positionCardController() {
     var ctrl = this;
 
     ctrl.$onSalaryChanged = function () {
-        if (ctrl.salary) {
+        if (ctrl.data.salary) {
             //log(ctrl.salary.length);
-            if (ctrl.salary.length > 3) {
-                var formatted = ctrl.salary.replace(/[^\d]/, '').replace(/ /g, '');
+            if (ctrl.data.salary.length > 3) {
+                var formatted = ctrl.data.salary.replace(/[^\d]/, '').replace(/ /g, '');
                 var length = formatted.length;
                 log(formatted);
                 while (length > 3) {
@@ -552,11 +535,27 @@ function positionCardController() {
                     //log(length);
                     formatted = formatted.slice(0, length) + ' ' + formatted.slice(length);
                 }
-                ctrl.salary = formatted;
+                ctrl.data.salary = formatted;
             } else {
-                ctrl.salary = ctrl.salary.replace(/[^\d]/, '').replace(/ /g, '');
+                ctrl.data.salary = ctrl.data.salary.replace(/[^\d]/, '').replace(/ /g, '');
             }
         }
+    };
+
+    ctrl.$onInit = function () {
+        if (ctrl.data) {
+            ctrl.toDelete = 'position' + ctrl.data.name;
+            ctrl.isUpdating = true;
+        } else {
+            ctrl.isUpdating = false;
+        }
+    };
+
+    ctrl.save = function () {
+        if (ctrl.isUpdating) {
+            storage.deleteEntity(ctrl.toDelete);
+        }
+        storage.addEntity('position' + ctrl.data.name, ctrl.data);
     };
 }
 
@@ -654,6 +653,9 @@ app.factory('storage', function () {
             values.push(this.getEntity(keys[i]));
         }
 
+        var time_ms = new Date().getTime();
+        while (new Date().getTime() < time_ms + 3000) {}
+
         return values;
     };
 
@@ -666,25 +668,80 @@ app.factory('storage', function () {
                 values.push(this.getEntity(keys[i]));
             }
         }
+
+        //let time_ms = new Date().getTime();
+        //while (new Date().getTime() < time_ms + 1000) {}
+        if (type === 'department') {
+            log(values);
+            values = listToTree(values);
+            log('after' + values);
+        }
         return values;
     };
 
     return factory;
 });
+
+function listToTree(list) {
+    var tree = getRange(undefined);
+
+    function getRange(parentName) {
+        var range = [];
+        var listLen = list.length;
+        for (var counter = 0; counter < listLen; counter++) {
+            if (list[counter].parent === parentName) {
+                var elem = list[counter].name;
+                list.splice(counter, 1);
+                listLen--;
+                range.push({
+                    name: elem,
+                    children: getRange(elem)
+                });
+                listLen = list.length;
+                counter--;
+            }
+        }
+        return range;
+    }
+    return tree;
+}
 'use strict';
 
+/*const DEPARTMENTS = [
+    {
+        name: 'Отдел1',
+        children:[
+            {
+                name: 'Отдел1.1',
+                children: [
+                    {
+                        name: 'Отдел1.1.1'
+                    }
+                ]
+            },
+            {
+                name: 'Отдел1.2'
+            }
+        ]
+    },
+    {
+        name: 'Отдел2'
+    }
+];*/
+
 var DEPARTMENTS = [{
-    name: 'Отдел1',
-    children: [{
-        name: 'Отдел1.1',
-        children: [{
-            name: 'Отдел1.1.1'
-        }]
-    }, {
-        name: 'Отдел1.2'
-    }]
+    name: 'Отдел1'
 }, {
     name: 'Отдел2'
+}, {
+    name: 'Отдел1.1',
+    parent: 'Отдел1'
+}, {
+    name: 'Отдел1.1.1',
+    parent: 'Отдел1.1'
+}, {
+    name: 'Отдел1.2',
+    parent: 'Отдел1'
 }];
 var POSITIONS = [{
     name: 'Должность1',
@@ -723,20 +780,81 @@ var EMPLOYEES = [{
 }];
 'use strict';
 
-function searchController() {
+function employeeCardController(storage) {
     var ctrl = this;
 
-    ctrl.handleTextChange = function () {
-        ctrl.onTextChange({ text: ctrl.text });
+    ctrl.$onInit = function () {
+        $('#phone').mask('+7(999)999-9999');
+        if (ctrl.data) {
+            ctrl.toDelete = 'employee' + ctrl.data.name;
+            ctrl.isUpdating = true;
+        } else {
+            ctrl.isUpdating = false;
+        }
+    };
+
+    ctrl.$onChanges = function (changeObj) {
+        if (changeObj.data) {
+            if (ctrl.data) {
+                ctrl.data.date = new Date(ctrl.data.date);
+            }
+        }
+    };
+
+    ctrl.save = function () {
+        if (ctrl.isUpdating) {
+            storage.deleteEntity(ctrl.toDelete);
+        }
+        storage.addEntity('employee' + ctrl.data.name, ctrl.data);
     };
 }
 
-app.component('search', {
+app.component('employeeCard', {
+    templateUrl: 'src/employee/employeeCard.html',
+    controller: ['storage', employeeCardController],
     bindings: {
-        onTextChange: '&'
-    },
-    templateUrl: 'src/content/search/search.html',
-    controller: searchController
+        data: '<',
+        departments: '<',
+        positions: '<'
+    }
+});
+'use strict';
+
+app.directive('employeeCardDirective', function () {
+    return {
+        restrict: 'E',
+        link: function link(scope) {
+            if (!scope.data.addition) {
+                scope.emp = JSON.parse(scope.data.checked);
+            }
+            $('#phone').mask('+7(999)999-9999');
+            scope.data.addition = false;
+        },
+        templateUrl: 'src/employee/employeeCard.html'
+    };
+});
+'use strict';
+
+function employeeListController() {
+    var ctrl = this;
+    ctrl.search = {};
+
+    ctrl.$onChanges = function (changes) {};
+
+    ctrl.handleSelectChange = function (text) {
+        ctrl.data.position = '';
+        ctrl.data.departments = '';
+    };
+}
+
+app.component('employeeList', {
+    templateUrl: 'src/employee/employeeList.html',
+    controller: employeeListController,
+    bindings: {
+        data: '@',
+        search: '<',
+        entities: '<'
+    }
 });
 'use strict';
 
@@ -798,7 +916,7 @@ app.directive('chooseList', function ($compile) {
                         break;
                     case 'department':
                         scope.departments = scope.data.departments;
-                        list = angular.element('<department-list data="departments" search="search">');
+                        list = angular.element('<department-list entities="departments" search="search" data="{{data}}">');
                         break;
                     case 'position':
                         scope.positions = scope.data.positions;
@@ -810,6 +928,23 @@ app.directive('chooseList', function ($compile) {
             }
         }
     };
+});
+'use strict';
+
+function searchController() {
+    var ctrl = this;
+
+    ctrl.handleTextChange = function () {
+        ctrl.onTextChange({ text: ctrl.text });
+    };
+}
+
+app.component('search', {
+    bindings: {
+        onTextChange: '&'
+    },
+    templateUrl: 'src/content/search/search.html',
+    controller: searchController
 });
 'use strict';
 

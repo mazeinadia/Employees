@@ -1,0 +1,14 @@
+.list {
+    list-style: none;
+    grid-area: list;
+}
+
+.list__employee {
+    margin-left: 40px;
+    border-bottom: 1px solid;
+    width: 300px;
+    margin-top: 10px;
+}
+.position {
+    margin-bottom: 10px;
+}

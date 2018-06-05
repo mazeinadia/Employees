@@ -1,3 +1,5 @@
-<search on-text-change="$ctrl.setSearchText(text)"></search>
-<add-entity mode="{{$ctrl.mode}}" data="{{$ctrl.data}}"></add-entity>
-<list mode="{{$ctrl.mode}}" data="{{$ctrl.data}}" id="list" search="$ctrl.search"></list>
+<div class="menu menu-container">
+    <search on-text-change="$ctrl.setSearchText(text)" class="search"></search>
+    <add-entity mode="{{$ctrl.mode}}" data="{{$ctrl.data}}"></add-entity>
+    <list mode="{{$ctrl.mode}}" data="{{$ctrl.data}}" id="list" search="$ctrl.search"></list>
+</div>

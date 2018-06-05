@@ -1,6 +1,12 @@
-<division-list data="{{$ctrl.data}}" ></division-list>
-<db on-load="$ctrl.getTestData()" on-clear="$ctrl.clearDB()"></db>
-<div id="content-container">
+
+<div class="nav-container">
+    <division-list data="{{$ctrl.data}}" class="divisions"></division-list>
+</div>
+<div class="db-container">
+    <db on-load="$ctrl.getTestData()" on-clear="$ctrl.clearDB()" class="db"></db>
+</div>
+<div id="content-container" class="content-container">
+    <div loading="{{$ctrl.loading}}" ></div>
     <div id="content"></div>
     <div id="card"></div>
 </div>

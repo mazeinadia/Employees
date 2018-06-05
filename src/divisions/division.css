@@ -1,16 +1,21 @@
 .nav {
   display: inline-block;
   padding: 10px 15px;
-  border: solid 1px black; }
+  border: solid 1px black;
+}
 
-.nav__radio {
+.radio {
   display: none; }
 
-.nav__text::hover {
-  background-color: gray; }
+.nav__radio:checked + .nav {
+  margin-top: 5px;
+  font-weight: bold; }
+
+.nav:hover {
+  font-weight: bold; }
 
 .nav__text {
   font-size: 18px;
-  border: none; }
-
-/*# sourceMappingURL=division.css.map */
+  border: none;
+  cursor: pointer;
+}

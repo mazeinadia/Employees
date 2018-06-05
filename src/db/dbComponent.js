@@ -5,14 +5,16 @@ function dbController() {
 
 
     ctrl.handleLoad = function () {
-        if (!ctrl.dataIsLoaded){
+        ctrl.onLoad();
+        /*if (!ctrl.dataIsLoaded){
             
             ctrl.onLoad();
             ctrl.dataIsLoaded = true;
             alert('БД заполнена тестовыми данными')
         } else {
             alert('БД уже была заполнена тестовыми данными')
-        }
+        }*/
+
     };
 
     ctrl.handleClear = function () {

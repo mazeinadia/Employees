@@ -1,4 +1,4 @@
-const DEPARTMENTS = [
+/*const DEPARTMENTS = [
     {
         name: 'Отдел1',
         children:[
@@ -17,6 +17,27 @@ const DEPARTMENTS = [
     },
     {
         name: 'Отдел2'
+    }
+];*/
+
+const DEPARTMENTS = [
+    {
+        name: 'Отдел1'
+    },
+    {
+        name: 'Отдел2'
+    },
+    {
+        name: 'Отдел1.1',
+        parent: 'Отдел1'
+    },
+    {
+        name: 'Отдел1.1.1',
+        parent: 'Отдел1.1'
+    },
+    {
+        name: 'Отдел1.2',
+        parent: 'Отдел1'
     }
 ];
 const POSITIONS = [

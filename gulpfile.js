@@ -40,11 +40,11 @@ gulp.task('sass', () =>
         .pipe(connect.reload())
 );
 
+
 gulp.task('watch', () => {
     gulp.watch('src/**/*.js', ['js']);
     gulp.watch('index.html', ['main-html']);
-    gulp.watch('src/**/*.html', ['html']);
-    gulp.watch('src/**/*.scss', ['sass'])
+    gulp.watch('src/**/*.html', ['html'])
 });
 
-gulp.task('default', ['connect', 'js', 'html', 'main-html', 'sass', 'watch']);
+gulp.task('default', ['connect', 'js', 'html', 'main-html', 'watch']);

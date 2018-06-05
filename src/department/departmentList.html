@@ -1,4 +1,5 @@
-<ul>
-    <node ng-repeat="dep in $ctrl.data | filter: $ctrl.search.name | orderBy: 'name'"
-          member="dep"></node>
+<ul class="list">
+    <node ng-repeat="dep in $ctrl.entities |
+          filter: $ctrl.search.name | orderBy: 'name'"
+          member="dep" data="{{$ctrl.data}}"></node>
 </ul>

@@ -1,0 +1,35 @@
+.search {
+    display: inline-block;
+    padding-top: 5px; }
+
+.frame {
+    width: 20px;
+    height: 20px;
+    border: none;
+    padding: 1px;
+    display: inline-block;
+    margin-bottom: -5px;
+}
+
+.bigCircle {
+    width: 65%;
+    height: 65%;
+    border-radius: 50%;
+    background-color: gray;
+    float: right; }
+
+.smallCircle {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    background-color: white;
+    margin: 10%; }
+
+.stick {
+    width: 50%;
+    height: 100%;
+    border-bottom: 1px solid gray;
+    -moz-transform: rotate(-45deg);
+    margin-left: -33%;
+    margin-top: -18%; }
+

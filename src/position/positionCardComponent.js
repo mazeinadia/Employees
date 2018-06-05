@@ -2,10 +2,10 @@ function positionCardController () {
     let ctrl = this;
 
     ctrl.$onSalaryChanged = function () {
-        if (ctrl.salary) {
+        if (ctrl.data.salary) {
             //log(ctrl.salary.length);
-            if (ctrl.salary.length > 3) {
-                let formatted = ctrl.salary.replace(/[^\d]/, '').replace(/ /g, '');
+            if (ctrl.data.salary.length > 3) {
+                let formatted = ctrl.data.salary.replace(/[^\d]/, '').replace(/ /g, '');
                 let length = formatted.length;
                 log(formatted);
                 while (length > 3) {
@@ -13,11 +13,27 @@ function positionCardController () {
                     //log(length);
                     formatted = formatted.slice(0, length) + ' ' + formatted.slice(length);
                 }
-                ctrl.salary = formatted;
+                ctrl.data.salary = formatted;
             } else {
-                ctrl.salary = ctrl.salary.replace(/[^\d]/, '').replace(/ /g, '');
+                ctrl.data.salary = ctrl.data.salary.replace(/[^\d]/, '').replace(/ /g, '');
             }
         }
+    };
+
+    ctrl.$onInit = function () {
+        if (ctrl.data){
+            ctrl.toDelete = 'position' + ctrl.data.name;
+            ctrl.isUpdating = true;
+        } else {
+            ctrl.isUpdating = false;
+        }
+    };
+
+    ctrl.save = function() {
+        if(ctrl.isUpdating){
+            storage.deleteEntity(ctrl.toDelete)
+        }
+        storage.addEntity('position' + ctrl.data.name, ctrl.data);
     }
 }
 
