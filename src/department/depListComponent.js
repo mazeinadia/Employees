@@ -3,14 +3,14 @@ function departmentListController() {
     ctrl.search = {};
 
     ctrl.$onChanges = function (changes) {
-        if (changes.search) {
+        /*if (changes.search) {
             log('CHANGE search for ' + this.search);
             log(changes.search['name']);
         }
         if (changes.entities) {
             log('deps');
             log(ctrl.entities);
-        }
+        }*/
     };
 }
 

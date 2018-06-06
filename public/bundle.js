@@ -5,6 +5,52 @@ var app = angular.module("app", []);
 var log = console.log;
 'use strict';
 
+function appController(scope, storage, q) {
+    var ctrl = this;
+
+    ctrl.data = '';
+    ctrl.modes = [{
+        value: 'employee',
+        text: 'Сотрудники'
+    }, {
+        value: 'department',
+        text: 'Отделы'
+    }, {
+        value: 'position',
+        text: 'Должности'
+    }];
+    ctrl.loading = false;
+
+    ctrl.getTestData = function () {
+        ctrl.loading = true;
+        new Promise(function (resolve, reject) {
+            setTimeout(resolve(), 1);
+        }).then(function () {
+            ctrl.data = {};
+            storage.setTestData();
+            ctrl.modes.forEach(function (mode) {
+                ctrl.data[mode.value + 's'] = storage.getAllEntitiesOneType(mode.value);
+            });
+            ctrl.data = JSON.stringify(ctrl.data);
+        }).then(function () {});
+    };
+
+    ctrl.clearDB = function () {
+        storage.clear();
+        ctrl.data = '';
+    };
+
+    ctrl.setMode = function (mode) {
+        ctrl.mode = mode;
+    };
+}
+
+app.component('appComponent', {
+    templateUrl: 'src/app/app.html',
+    controller: ['$scope', 'storage', '$q', appController]
+});
+'use strict';
+
 app.directive('card', function ($compile) {
     return {
         restrict: 'E',
@@ -38,9 +84,9 @@ app.directive('card', function ($compile) {
                         scope.data = JSON.parse(scope.data);
                         scope.departments = scope.data.departments;
                         scope.departments.push({ name: '' });
-                        if (scope.entity) {
+                        /*if (scope.entity) {
                             scope.entity = JSON.parse(scope.entity);
-                        }
+                        }*/
                         card = angular.element('<department-card id="card" data="entity" departments="departments">');
                     } else {
                         card = angular.element('<department-card id="card">');
@@ -163,56 +209,6 @@ app.component('searchSelect', {
         className: '@',
         onSelectedChange: '&'
     }
-});
-'use strict';
-
-function appController(scope, storage, q) {
-    var ctrl = this;
-
-    ctrl.data = '';
-    ctrl.modes = [{
-        value: 'employee',
-        text: 'Сотрудники'
-    }, {
-        value: 'department',
-        text: 'Отделы'
-    }, {
-        value: 'position',
-        text: 'Должности'
-    }];
-    ctrl.loading = false;
-
-    ctrl.getTestData = function () {
-        ctrl.loading = true;
-        new Promise(function (resolve, reject) {
-            setTimeout(resolve(), 1);
-        }).then(function () {
-            console.log('work');
-            ctrl.data = {};
-            storage.setTestData();
-            ctrl.modes.forEach(function (mode) {
-                ctrl.data[mode.value + 's'] = storage.getAllEntitiesOneType(mode.value);
-            });
-            ctrl.data = JSON.stringify(ctrl.data);
-        }).then(function () {
-            log(ctrl);ctrl.loading = false;
-        });
-        console.log(1);
-    };
-
-    ctrl.clearDB = function () {
-        storage.clear();
-        ctrl.data = '';
-    };
-
-    ctrl.setMode = function (mode) {
-        ctrl.mode = mode;
-    };
-}
-
-app.component('appComponent', {
-    templateUrl: 'src/app/app.html',
-    controller: ['$scope', 'storage', '$q', appController]
 });
 'use strict';
 
@@ -342,6 +338,10 @@ function departmentCardController() {
     var ctrl = this;
 
     ctrl.$onInit = function () {
+        log('in department card');
+        log(ctrl.data);
+        log(ctrl.departments);
+        log(ctrl.data.parent);
         if (ctrl.data) {
             ctrl.toDelete = 'department' + ctrl.data.name;
             ctrl.isUpdating = true;
@@ -373,14 +373,14 @@ function departmentListController() {
     ctrl.search = {};
 
     ctrl.$onChanges = function (changes) {
-        if (changes.search) {
+        /*if (changes.search) {
             log('CHANGE search for ' + this.search);
             log(changes.search['name']);
         }
         if (changes.entities) {
             log('deps');
             log(ctrl.entities);
-        }
+        }*/
     };
 }
 
@@ -401,18 +401,26 @@ app.directive('node', function ($compile) {
         replace: true,
         scope: {
             member: '=',
-            data: '@'
+            data: '@',
+            search: '='
         },
         templateUrl: 'src/department/departmentNode.html',
         link: function link(scope, element, attrs) {
-            element.find('.add').on('click', function () {
+            element.find('button').on('click', function () {
                 var content = angular.element(document.getElementById('card'));
                 scope.entity = { parent: scope.member.name };
+                var card = angular.element('<card mode="department" data="{{data}}" entity="entity">');
+                content.replaceWith(card);
+                $compile(card)(scope);
+            });
+            element.find('input').on('change', function () {
+                var content = angular.element(document.getElementById('card'));
                 var card = angular.element('<card mode="department" data="{{data}}" entity="member">');
                 content.replaceWith(card);
+                $compile(card)(scope);
             });
             if (angular.isArray(scope.member.children)) {
-                element.append('<department-list entities="member.children">');
+                element.append('<department-list entities="member.children" data="{{data}}" search="search">');
                 $compile(element.contents())(scope);
             }
         }
@@ -484,6 +492,84 @@ app.component('divisionList', {
 });
 'use strict';
 
+function employeeCardController(storage) {
+    var ctrl = this;
+
+    ctrl.$onInit = function () {
+        $('#phone').mask('+7(999)999-9999');
+        if (ctrl.data) {
+            ctrl.toDelete = 'employee' + ctrl.data.name;
+            ctrl.isUpdating = true;
+        } else {
+            ctrl.isUpdating = false;
+        }
+    };
+
+    ctrl.$onChanges = function (changeObj) {
+        if (changeObj.data) {
+            if (ctrl.data) {
+                ctrl.data.date = new Date(ctrl.data.date);
+            }
+        }
+    };
+
+    ctrl.save = function () {
+        if (ctrl.isUpdating) {
+            storage.deleteEntity(ctrl.toDelete);
+        }
+        storage.addEntity('employee' + ctrl.data.name, ctrl.data);
+    };
+}
+
+app.component('employeeCard', {
+    templateUrl: 'src/employee/employeeCard.html',
+    controller: ['storage', employeeCardController],
+    bindings: {
+        data: '<',
+        departments: '<',
+        positions: '<'
+    }
+});
+'use strict';
+
+app.directive('employeeCardDirective', function () {
+    return {
+        restrict: 'E',
+        link: function link(scope) {
+            if (!scope.data.addition) {
+                scope.emp = JSON.parse(scope.data.checked);
+            }
+            $('#phone').mask('+7(999)999-9999');
+            scope.data.addition = false;
+        },
+        templateUrl: 'src/employee/employeeCard.html'
+    };
+});
+'use strict';
+
+function employeeListController() {
+    var ctrl = this;
+    ctrl.search = {};
+
+    ctrl.$onChanges = function (changes) {};
+
+    ctrl.handleSelectChange = function (text) {
+        ctrl.data.position = '';
+        ctrl.data.departments = '';
+    };
+}
+
+app.component('employeeList', {
+    templateUrl: 'src/employee/employeeList.html',
+    controller: employeeListController,
+    bindings: {
+        data: '@',
+        search: '<',
+        entities: '<'
+    }
+});
+'use strict';
+
 function loaderController() {
     var ctrl = this;
 }
@@ -501,7 +587,6 @@ app.directive('loading', function ($compile) {
         },
         link: function link(scope, element, attributes) {
             scope.$watch('loading', function (value) {
-                log('loader ' + value);
                 if (value === 'true') {
                     //show
                     element.append('<loader>');
@@ -546,6 +631,7 @@ function positionCardController() {
         if (ctrl.data) {
             ctrl.toDelete = 'position' + ctrl.data.name;
             ctrl.isUpdating = true;
+            log('add to del' + ctrl.toDelete);
         } else {
             ctrl.isUpdating = false;
         }
@@ -555,6 +641,7 @@ function positionCardController() {
         if (ctrl.isUpdating) {
             storage.deleteEntity(ctrl.toDelete);
         }
+        log('add ' + ctrl.data);
         storage.addEntity('position' + ctrl.data.name, ctrl.data);
     };
 }
@@ -672,9 +759,7 @@ app.factory('storage', function () {
         //let time_ms = new Date().getTime();
         //while (new Date().getTime() < time_ms + 1000) {}
         if (type === 'department') {
-            log(values);
             values = listToTree(values);
-            log('after' + values);
         }
         return values;
     };
@@ -694,6 +779,7 @@ function listToTree(list) {
                 list.splice(counter, 1);
                 listLen--;
                 range.push({
+                    parent: parentName,
                     name: elem,
                     children: getRange(elem)
                 });
@@ -778,84 +864,6 @@ var EMPLOYEES = [{
     phone: '+7(213)456-7890',
     email: 'mail2@mail.ru'
 }];
-'use strict';
-
-function employeeCardController(storage) {
-    var ctrl = this;
-
-    ctrl.$onInit = function () {
-        $('#phone').mask('+7(999)999-9999');
-        if (ctrl.data) {
-            ctrl.toDelete = 'employee' + ctrl.data.name;
-            ctrl.isUpdating = true;
-        } else {
-            ctrl.isUpdating = false;
-        }
-    };
-
-    ctrl.$onChanges = function (changeObj) {
-        if (changeObj.data) {
-            if (ctrl.data) {
-                ctrl.data.date = new Date(ctrl.data.date);
-            }
-        }
-    };
-
-    ctrl.save = function () {
-        if (ctrl.isUpdating) {
-            storage.deleteEntity(ctrl.toDelete);
-        }
-        storage.addEntity('employee' + ctrl.data.name, ctrl.data);
-    };
-}
-
-app.component('employeeCard', {
-    templateUrl: 'src/employee/employeeCard.html',
-    controller: ['storage', employeeCardController],
-    bindings: {
-        data: '<',
-        departments: '<',
-        positions: '<'
-    }
-});
-'use strict';
-
-app.directive('employeeCardDirective', function () {
-    return {
-        restrict: 'E',
-        link: function link(scope) {
-            if (!scope.data.addition) {
-                scope.emp = JSON.parse(scope.data.checked);
-            }
-            $('#phone').mask('+7(999)999-9999');
-            scope.data.addition = false;
-        },
-        templateUrl: 'src/employee/employeeCard.html'
-    };
-});
-'use strict';
-
-function employeeListController() {
-    var ctrl = this;
-    ctrl.search = {};
-
-    ctrl.$onChanges = function (changes) {};
-
-    ctrl.handleSelectChange = function (text) {
-        ctrl.data.position = '';
-        ctrl.data.departments = '';
-    };
-}
-
-app.component('employeeList', {
-    templateUrl: 'src/employee/employeeList.html',
-    controller: employeeListController,
-    bindings: {
-        data: '@',
-        search: '<',
-        entities: '<'
-    }
-});
 'use strict';
 
 app.directive('changeEntity', function ($compile) {

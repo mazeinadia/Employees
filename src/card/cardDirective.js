@@ -32,9 +32,9 @@ app.directive('card', function ($compile) {
                         scope.data = JSON.parse(scope.data);
                         scope.departments = scope.data.departments;
                         scope.departments.push({name: ''});
-                        if (scope.entity) {
+                        /*if (scope.entity) {
                             scope.entity = JSON.parse(scope.entity);
-                        }
+                        }*/
                         card = angular.element('<department-card id="card" data="entity" departments="departments">');
                     } else {
                         card = angular.element('<department-card id="card">');

@@ -24,6 +24,7 @@ function positionCardController () {
         if (ctrl.data){
             ctrl.toDelete = 'position' + ctrl.data.name;
             ctrl.isUpdating = true;
+            log('add to del' + ctrl.toDelete);
         } else {
             ctrl.isUpdating = false;
         }
@@ -33,6 +34,7 @@ function positionCardController () {
         if(ctrl.isUpdating){
             storage.deleteEntity(ctrl.toDelete)
         }
+        log('add ' + ctrl.data);
         storage.addEntity('position' + ctrl.data.name, ctrl.data);
     }
 }

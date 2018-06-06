@@ -9,7 +9,7 @@ function searchSelectController() {
     ctrl.$onInit = function () {
         ctrl.selectText = ctrl.selected;
         ctrl.visibility = {};
-        ctrl.visibility.optionsVisible = false
+        ctrl.visibility.optionsVisible = false;
     };
 
     ctrl.$onChanges = function () {};

@@ -81,9 +81,7 @@ app.factory('storage', function () {
        //let time_ms = new Date().getTime();
        //while (new Date().getTime() < time_ms + 1000) {}
        if (type === 'department') {
-           log(values);
            values = listToTree(values);
-           log('after' + values);
        }
        return values;
    };
@@ -103,6 +101,7 @@ function listToTree(list) {
                 list.splice(counter, 1);
                 listLen--;
                 range.push({
+                    parent: parentName,
                     name: elem,
                     children: getRange(elem)
                     });

@@ -16,7 +16,6 @@ app.directive('loading', function ($compile) {
        },
        link: function (scope, element, attributes) {
            scope.$watch('loading', function (value) {
-               log('loader ' + value);
                if (value === 'true') {
                    //show
                    element.append('<loader>');

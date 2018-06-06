@@ -2,6 +2,10 @@ function departmentCardController () {
     let ctrl = this;
 
     ctrl.$onInit = function () {
+        log('in department card');
+        log(ctrl.data);
+        log(ctrl.departments);
+        log(ctrl.data.parent);
         if (ctrl.data){
             ctrl.toDelete = 'department' + ctrl.data.name;
             ctrl.isUpdating = true;

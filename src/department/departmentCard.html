@@ -6,9 +6,9 @@
 
         <label for="parent" class="fieldLabel">Вышестоящий отдел</label>
         <p><search-select id="parent" class-name="parent" options="$ctrl.departments"
-                          selected="{{$ctrl.data.department}}"></search-select>
+                          selected="{{$ctrl.data.parent}}"></search-select>
 
-        <input type="submit" ng-click="save()"
+        <input type="submit" ng-click="$ctrl.save()"
                value="Сохранить">
     </form>
 </div>

@@ -24,7 +24,6 @@ function appController(scope, storage, q) {
             setTimeout(resolve(), 1);
         }).then(
             () => {
-                console.log('work');
                 ctrl.data = {};
                 storage.setTestData();
                 ctrl.modes.forEach((mode) => {
@@ -34,10 +33,10 @@ function appController(scope, storage, q) {
             }
         ).then(
             () => {
-                log(ctrl); ctrl.loading = false
+
             }
         );
-        console.log(1);
+
     };
 
     ctrl.clearDB = function () {
