@@ -365,6 +365,7 @@ function divisionListController() {
 
     ctrl.$onInit = function () {
         ctrl.previousData = ctrl.data;
+        log(ctrl.division);
     };
 
     ctrl.$onChanges = function (obj) {
@@ -760,6 +761,11 @@ var EMPLOYEES = [{
     phone: '8 (918) 898 9898',
     email: 'mail2@mail.ru'
 }];
+'use strict';
+
+app.component('pencil', {
+    templateUrl: 'src/card/pencil/pencil.html'
+});
 'use strict';
 
 function searchSelectController() {

@@ -21,6 +21,7 @@ function divisionListController() {
 
     ctrl.$onInit = function () {
         ctrl.previousData = ctrl.data;
+        log(ctrl.division);
     };
 
     ctrl.$onChanges = function(obj){
