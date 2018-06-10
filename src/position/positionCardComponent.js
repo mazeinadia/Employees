@@ -1,4 +1,4 @@
-function positionCardController () {
+function positionCardController (storage, $timeout) {
     let ctrl = this;
 
     ctrl.$onSalaryChanged = function () {
@@ -21,21 +21,25 @@ function positionCardController () {
     };
 
     ctrl.$onInit = function () {
+        ctrl.closing = 'false';
         if (ctrl.data){
-            ctrl.toDelete = 'position' + ctrl.data.name;
+            ctrl.toDeleteName = ctrl.data.name;
             ctrl.isUpdating = true;
-            log('add to del' + ctrl.toDelete);
         } else {
             ctrl.isUpdating = false;
         }
     };
 
     ctrl.save = function() {
-        if(ctrl.isUpdating){
-            storage.deleteEntity(ctrl.toDelete)
+        if(ctrl.isUpdating && ctrl.data.name !== ctrl.toDeleteName){
+            storage.deleteEntity('position' + ctrl.toDeleteName)
         }
-        log('add ' + ctrl.data);
         storage.addEntity('position' + ctrl.data.name, ctrl.data);
+        let updater = angular.element(document.getElementById('fillDB'));
+        $timeout(function () {
+            updater.triggerHandler("click");
+        });
+        ctrl.closing = 'true';
     }
 }
 

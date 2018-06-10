@@ -1,86 +1,64 @@
-/*const DEPARTMENTS = [
-    {
-        name: 'Отдел1',
-        children:[
-            {
-                name: 'Отдел1.1',
-                children: [
-                    {
-                        name: 'Отдел1.1.1'
-                    }
-                ]
-            },
-            {
-                name: 'Отдел1.2'
-            }
-        ]
-    },
-    {
-        name: 'Отдел2'
-    }
-];*/
-
 const DEPARTMENTS = [
     {
-        name: 'Отдел1'
+        name: 'Маркетинг'
     },
     {
-        name: 'Отдел2'
+        name: 'HR'
     },
     {
-        name: 'Отдел1.1',
-        parent: 'Отдел1'
+        name: 'Планирование',
+        parent: 'Маркетинг'
     },
     {
-        name: 'Отдел1.1.1',
-        parent: 'Отдел1.1'
+        name: 'Техническая поддержка',
+        parent: 'Корпоративный маркетинг'
     },
     {
-        name: 'Отдел1.2',
-        parent: 'Отдел1'
+        name: 'Корпоративный маркетинг',
+        parent: 'Маркетинг'
     }
 ];
 const POSITIONS = [
     {
-        name: 'Должность1',
-        salary: 10500
+        name: 'Генеральный директор',
+        salary: 250000
     },
     {
-        name: 'Должность2',
-        salary: 200
+        name: 'HR-менеджер',
+        salary: 70000
     },
     {
-        name: 'Должность3',
-        salary: 150000
+        name: 'Маркетолог',
+        salary: 70000
     },
     {
-        name: 'Должность4',
-        salary: 3500000
+        name: 'Консультант',
+        salary: 50000
     }
 ];
 const EMPLOYEES = [
     {
-        name: 'рабочий',
-        date:  new Date('2018-03-01'),
-        position: 'Должность2',
-        department: 'Отдел2',
-        phone: '+7(123)456-7890',
+        name: 'Пертов Перт Петрович',
+        date:  '2018-03-01',
+        position: 'HR-менеджер',
+        department: 'HR',
+        phone: '8 (998) 898 9898',
         email: 'mail@mail.ru'
     },
     {
-        name: 'рабочий2',
+        name: 'Иванов Иван Иванович',
         date:  '2018-03-01',
-        position: 'Должность1',
-        department:  'Отдел1',
-        phone: '+7(321)456-7890',
+        position: 'Консультант',
+        department:  'Техническая поддержка',
+        phone: '8 (908) 898 9898',
         email: 'mail3@mail.ru'
     },
     {
-        name: 'рабочий1',
+        name: 'Кошкин Константин Константинович',
         date:  '2018-03-01',
-        position: 'Должность4',
-        department:  'Отдел1.1',
-        phone: '+7(213)456-7890',
+        position: 'Генеральный директор',
+        department:  '',
+        phone: '8 (918) 898 9898',
         email: 'mail2@mail.ru'
     }
 ];

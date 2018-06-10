@@ -8,7 +8,7 @@
         <p><input id="salary" type="text" class="salary" ng-change="$ctrl.$onSalaryChanged()"
                   ng-model="$ctrl.data.salary" required></p>
 
-        <input type="submit" ng-click="$ctrl.save()"
+        <input type="submit" ng-click="$ctrl.save()" close-card="{{$ctrl.closing}}"
                value="Сохранить">
     </form>
 </div>

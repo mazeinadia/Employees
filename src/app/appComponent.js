@@ -19,24 +19,27 @@ function appController(scope, storage, q) {
     ctrl.loading = false;
 
     ctrl.getTestData = function() {
-        ctrl.loading = true;
+        /*ctrl.loading = true;
         new Promise(function (resolve, reject) {
             setTimeout(resolve(), 1);
-        }).then(
-            () => {
-                ctrl.data = {};
-                storage.setTestData();
-                ctrl.modes.forEach((mode) => {
-                    ctrl.data[mode.value + 's'] = (storage.getAllEntitiesOneType(mode.value));
-                });
-                ctrl.data = JSON.stringify(ctrl.data);
-            }
-        ).then(
-            () => {
-
-            }
-        );
-
+        }).then(() => {
+            ctrl.data = {};
+            storage.setTestData();
+            ctrl.modes.forEach((mode) => {
+                ctrl.data[mode.value + 's'] = (storage.getAllEntitiesOneType(mode.value));
+            });
+            ctrl.data = JSON.stringify(ctrl.data);
+            log('app');
+        }).then(() => {
+            ctrl.loading = false;
+        });*/
+        ctrl.data = {};
+        storage.setTestData();
+        ctrl.modes.forEach((mode) => {
+            ctrl.data[mode.value + 's'] = (storage.getAllEntitiesOneType(mode.value));
+        });
+        ctrl.data = JSON.stringify(ctrl.data);
+        log('app');
     };
 
     ctrl.clearDB = function () {

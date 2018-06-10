@@ -9,31 +9,32 @@ app.directive('chooseList', function ($compile) {
         link: function (scope, element, attrs) {
             let list;
             if (scope.data) {
-                scope.data = JSON.parse(scope.data);
-
+                let data = angular.copy(JSON.parse(scope.data));
+                log('list derictive');
+                log('mode: ' + scope.mode);
                 switch (scope.mode) {
                     case 'employee':
-                        scope.employees = scope.data.employees;
+                        scope.employees = data.employees;
                         list = angular.element(
                             '<employee-list entities="employees" search="search" data="{{data}}">'
                         );
                         break;
                     case 'department':
-                        scope.departments = scope.data.departments;
+                        scope.departments = data.departments;
                         list = angular.element(
                             '<department-list entities="departments" search="search" data="{{data}}">'
                         );
                         break;
                     case 'position':
-                        scope.positions = scope.data.positions;
+                        scope.positions = data.positions;
                         list = angular.element(
                             '<position-list data="positions" search="search">'
                         );
                 }
-
                 element.replaceWith(list);
                 $compile(list)(scope);
             }
+
         }
     }
 });

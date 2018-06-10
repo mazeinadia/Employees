@@ -3,18 +3,13 @@ function dbController() {
 
     ctrl.dataIsLoaded = false;
 
+    ctrl.$onChanges = function(obj){
+
+    };
 
     ctrl.handleLoad = function () {
         ctrl.onLoad();
-        /*if (!ctrl.dataIsLoaded){
-            
-            ctrl.onLoad();
-            ctrl.dataIsLoaded = true;
-            alert('БД заполнена тестовыми данными')
-        } else {
-            alert('БД уже была заполнена тестовыми данными')
-        }*/
-
+        log('db load');
     };
 
     ctrl.handleClear = function () {

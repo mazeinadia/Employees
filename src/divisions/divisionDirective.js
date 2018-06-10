@@ -7,25 +7,23 @@ app.directive('division', function ($compile) {
             data: '@'
         },
         link: function (scope, element, attrs) {
-            scope.$watch('chosen',
-                function (value, old) {
-                    if (value === 'true'){
-                        updateMode();
-                    }
-                },
-                true);
-            let mode, data;
-            scope.$watch('division', function (value) {
-                mode = value
-            });
+            scope.$watch('chosen', function (value, old) {
+                if (value === 'true'){
+                    update();
+                }
+            }, true);
+
             scope.$watch('data', function (value) {
-                data = value;
+                if(scope.chosen === 'true') {
+                    update();
+                }
             });
 
-            function updateMode() {
+            function update() {
+                log('division -> updt');
                 let content = angular.element(document.getElementById('content'));
                 let newContent = angular.element(
-                    "<content id='content' mode='" + mode + "' data='" + data + "'>"
+                    '<content id="content" mode="{{division}}" data="{{data}}">'
                 );
                 content.replaceWith(newContent);
                 $compile(newContent)(scope);

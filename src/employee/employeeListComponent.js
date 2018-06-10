@@ -3,11 +3,18 @@ function employeeListController() {
     ctrl.search = {};
 
     ctrl.$onChanges = function (changes) {
+        if (changes.entities) {
+            log('employee list changed')
+        }
     };
     
     ctrl.handleSelectChange = function (text) {
         ctrl.data.position = '';
         ctrl.data.departments = '';
+    };
+
+    ctrl.$onInit = function () {
+        log('empl list init!');
     }
 }
 

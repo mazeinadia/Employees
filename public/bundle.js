@@ -22,17 +22,27 @@ function appController(scope, storage, q) {
     ctrl.loading = false;
 
     ctrl.getTestData = function () {
-        ctrl.loading = true;
+        /*ctrl.loading = true;
         new Promise(function (resolve, reject) {
             setTimeout(resolve(), 1);
-        }).then(function () {
+        }).then(() => {
             ctrl.data = {};
             storage.setTestData();
-            ctrl.modes.forEach(function (mode) {
-                ctrl.data[mode.value + 's'] = storage.getAllEntitiesOneType(mode.value);
+            ctrl.modes.forEach((mode) => {
+                ctrl.data[mode.value + 's'] = (storage.getAllEntitiesOneType(mode.value));
             });
             ctrl.data = JSON.stringify(ctrl.data);
-        }).then(function () {});
+            log('app');
+        }).then(() => {
+            ctrl.loading = false;
+        });*/
+        ctrl.data = {};
+        storage.setTestData();
+        ctrl.modes.forEach(function (mode) {
+            ctrl.data[mode.value + 's'] = storage.getAllEntitiesOneType(mode.value);
+        });
+        ctrl.data = JSON.stringify(ctrl.data);
+        log('app');
     };
 
     ctrl.clearDB = function () {
@@ -61,154 +71,63 @@ app.directive('card', function ($compile) {
         },
         link: function link(scope, element, attrs) {
             scope.$watch('mode', function (newMode) {
-                log(newMode);
-            });
-            var card = void 0;
-            switch (scope.mode) {
-                case 'employee':
-                    if (scope.data) {
-                        scope.data = JSON.parse(scope.data);
-                        scope.departments = scope.data.departments;
-                        scope.departments.push({ name: '' });
-                        scope.positions = scope.data.positions;
-                        if (scope.entity) {
-                            scope.entity = JSON.parse(scope.entity);
+                var card = void 0;
+                switch (scope.mode) {
+                    case 'employee':
+                        if (scope.data) {
+                            scope.data = JSON.parse(scope.data);
+                            scope.departments = scope.data.departments;
+                            scope.departments.push({ name: '' });
+                            scope.positions = scope.data.positions;
+                            if (scope.entity) {
+                                scope.employee = JSON.parse(scope.entity);
+                            }
+                            card = angular.element('<employee-card id="card" mode="mode"' + 'data="employee" departments="departments" positions="positions">');
+                        } else {
+                            card = angular.element('<employee-card id="card">');
                         }
-                        card = angular.element('<employee-card id="card" ' + 'data="entity" departments="departments" positions="positions">');
-                    } else {
-                        card = angular.element('<employee-card id="card">');
-                    }
-                    break;
-                case 'department':
-                    if (scope.data) {
-                        scope.data = JSON.parse(scope.data);
-                        scope.departments = scope.data.departments;
-                        scope.departments.push({ name: '' });
-                        /*if (scope.entity) {
-                            scope.entity = JSON.parse(scope.entity);
-                        }*/
-                        card = angular.element('<department-card id="card" data="entity" departments="departments">');
-                    } else {
-                        card = angular.element('<department-card id="card">');
-                    }
-                    break;
-                case 'position':
-                    if (scope.entity) {
-                        scope.entity = JSON.parse(scope.entity);
-                    }
-                    card = angular.element('<position-card id="card" data="entity">');
-            }
-            element.replaceWith(card);
-            $compile(card)(scope);
+                        break;
+                    case 'department':
+                        if (scope.data) {
+                            scope.data = JSON.parse(scope.data);
+                            scope.departments = scope.data.departments;
+                            scope.departments.push({ name: '' });
+                            card = angular.element('<department-card id="card" data="entity" departments="departments">');
+                        } else {
+                            card = angular.element('<department-card id="card">');
+                        }
+                        break;
+                    case 'position':
+                        if (scope.entity) {
+                            scope.position = JSON.parse(scope.entity);
+                        }
+                        card = angular.element('<position-card id="card" data="position">');
+                }
+                element.replaceWith(card);
+                $compile(card)(scope);
+            });
         }
     };
 });
 'use strict';
 
-app.directive('entityD', function ($compile) {
+app.directive('closeCard', function ($compile) {
     return {
         restrict: 'A',
         scope: {
-            mode: '@',
-            entity: '@',
-            data: '@'
+            closeCard: '@'
         },
-        link: function link(scope, element, attrs) {
-            scope.$watch('mode', function (newMode) {
-                log('in entity directive mode: ' + newMode);
+        link: function link(scope, elment, attributes) {
+            scope.$watch('closeCard', function (value) {
+                if (value === 'true') {
+                    var content = angular.element(document.getElementById('card'));
+                    var card = angular.element('<div id="card"></div>');
+                    content.replaceWith(card);
+                    $compile(card)(scope);
+                }
             });
-            var card = void 0;
-            scope.entity = JSON.parse(scope.entity);
-            switch (scope.mode) {
-                case 'employee':
-                    if (scope.data) {
-                        scope.data = JSON.parse(scope.data);
-                        scope.departments = scope.data.departments;
-                        scope.departments.push({ name: '' });
-                        scope.positions = scope.data.positions;
-
-                        card = angular.element('<employee-card id="card" ' + 'data="entity" departments="departments" positions="positions">');
-                    } else {
-                        card = angular.element('<employee-card id="card" data="entity">');
-                    }
-
-                    break;
-                case 'department':
-                    if (scope.data) {
-                        scope.data = JSON.parse(scope.data);
-                        scope.departments = scope.data.departments;
-                        scope.departments.push({ name: '' });
-
-                        card = angular.element('<department-card id="card" data="entity" departments="departments">');
-                    } else {
-                        card = angular.element('<department-card id="card" data="entity">');
-                    }
-                    break;
-                case 'position':
-                    card = angular.element('<position-card id="card" data="entity">');
-            }
-            element.replaceWith(card);
-            $compile(card)(scope);
         }
     };
-});
-'use strict';
-
-function optionsController() {
-    var ctrl = this;
-
-    ctrl.$onChanges = function (changes) {};
-}
-
-app.component('options', {
-    templateUrl: 'src/card/options.html',
-    controller: optionsController,
-    bindings: {
-        data: '<',
-        search: '@'
-    }
-});
-'use strict';
-
-function searchSelectController() {
-    var ctrl = this;
-
-    ctrl.searchChange = function (text) {
-        ctrl.searchText = { name: text };
-    };
-
-    ctrl.$onInit = function () {
-        ctrl.selectText = ctrl.selected;
-        ctrl.visibility = {};
-        ctrl.visibility.optionsVisible = false;
-    };
-
-    ctrl.$onChanges = function () {};
-
-    ctrl.showOptions = function () {
-        ctrl.visibility.optionsVisible = !ctrl.visibility.optionsVisible;
-    };
-
-    ctrl.handleChoose = function (value) {
-        ctrl.selectText = value;
-        ctrl.selected = value;
-        ctrl.onSelectedChange({ text: value });
-    };
-
-    ctrl.handleTreeClick = function () {
-        ctrl.visibility.optionsVisible = !ctrl.visibility.optionsVisible;
-    };
-}
-
-app.component('searchSelect', {
-    templateUrl: 'src/card/searchSelect.html',
-    controller: searchSelectController,
-    bindings: {
-        options: '<',
-        selected: '@',
-        className: '@',
-        onSelectedChange: '&'
-    }
 });
 'use strict';
 
@@ -238,6 +157,12 @@ app.directive('addEntity', function ($compile) {
 function contentController() {
     var ctrl = this;
 
+    ctrl.$onChanges = function (obj) {
+        if (obj.data) {
+            log('content');
+        }
+    };
+
     ctrl.setSearchText = function (text) {
         ctrl.search = { name: text };
         log('CONTENT search for ' + text);
@@ -254,62 +179,16 @@ app.component('content', {
 });
 'use strict';
 
-app.filter('groupBy', function () {
-            return function (list, group_by) {
-
-                        var filtered = [];
-                        var prev_item = null;
-                        var group_changed = false;
-                        // this is a new field which is added to each item where we append "_CHANGED"
-                        // to indicate a field change in the list
-                        var new_field = group_by + '_CHANGED';
-
-                        // loop through each item in the list
-                        angular.forEach(list, function (item) {
-
-                                    group_changed = false;
-
-                                    // if not the first item
-                                    if (prev_item !== null) {
-
-                                                // check if the group by field changed
-                                                if (prev_item[group_by] !== item[group_by]) {
-                                                            group_changed = true;
-                                                }
-
-                                                // otherwise we have the first item in the list which is new
-                                    } else {
-                                                group_changed = true;
-                                    }
-
-                                    // if the group changed, then add a new field to the item
-                                    // to indicate this
-                                    item[new_field] = group_changed;
-
-                                    filtered.push(item);
-                                    prev_item = item;
-                        });
-
-                        return filtered;
-            };
-});
-'use strict';
-
 function dbController() {
     var ctrl = this;
 
     ctrl.dataIsLoaded = false;
 
+    ctrl.$onChanges = function (obj) {};
+
     ctrl.handleLoad = function () {
         ctrl.onLoad();
-        /*if (!ctrl.dataIsLoaded){
-            
-            ctrl.onLoad();
-            ctrl.dataIsLoaded = true;
-            alert('БД заполнена тестовыми данными')
-        } else {
-            alert('БД уже была заполнена тестовыми данными')
-        }*/
+        log('db load');
     };
 
     ctrl.handleClear = function () {
@@ -334,27 +213,33 @@ app.component('db', {
 });
 'use strict';
 
-function departmentCardController() {
+function departmentCardController(storage, $timeout) {
     var ctrl = this;
 
     ctrl.$onInit = function () {
-        log('in department card');
-        log(ctrl.data);
-        log(ctrl.departments);
-        log(ctrl.data.parent);
+        ctrl.closing = 'false';
         if (ctrl.data) {
-            ctrl.toDelete = 'department' + ctrl.data.name;
+            ctrl.toDeleteName = ctrl.data.name;
             ctrl.isUpdating = true;
         } else {
             ctrl.isUpdating = false;
         }
     };
 
+    ctrl.handleSelectedChange = function (text, mode) {
+        ctrl.data[mode] = text;
+    };
+
     ctrl.save = function () {
-        if (ctrl.isUpdating) {
-            storage.deleteEntity(ctrl.toDelete);
+        if (ctrl.isUpdating && ctrl.data.name !== ctrl.toDeleteName) {
+            storage.deleteEntity('department' + ctrl.toDeleteName);
         }
         storage.addEntity('department' + ctrl.data.name, ctrl.data);
+        var updater = angular.element(document.getElementById('fillDB'));
+        $timeout(function () {
+            updater.triggerHandler("click");
+        });
+        ctrl.closing = 'true';
     };
 }
 
@@ -439,21 +324,20 @@ app.directive('division', function ($compile) {
         link: function link(scope, element, attrs) {
             scope.$watch('chosen', function (value, old) {
                 if (value === 'true') {
-                    updateMode();
+                    update();
                 }
             }, true);
-            var mode = void 0,
-                data = void 0;
-            scope.$watch('division', function (value) {
-                mode = value;
-            });
+
             scope.$watch('data', function (value) {
-                data = value;
+                if (scope.chosen === 'true') {
+                    update();
+                }
             });
 
-            function updateMode() {
+            function update() {
+                log('division -> updt');
                 var content = angular.element(document.getElementById('content'));
-                var newContent = angular.element("<content id='content' mode='" + mode + "' data='" + data + "'>");
+                var newContent = angular.element('<content id="content" mode="{{division}}" data="{{data}}">');
                 content.replaceWith(newContent);
                 $compile(newContent)(scope);
             }
@@ -478,9 +362,17 @@ function divisionListController() {
     ctrl.isChosen = function (value) {
         return value === ctrl.division;
     };
-    /*ctrl.$onChanges = function() {
-        log(ctrl.data);
-    }*/
+
+    ctrl.$onInit = function () {
+        ctrl.previousData = ctrl.data;
+    };
+
+    ctrl.$onChanges = function (obj) {
+        log('div list changed, but not data');
+        if (obj.data) {
+            log('divisionList');
+        }
+    };
 }
 
 app.component('divisionList', {
@@ -492,13 +384,13 @@ app.component('divisionList', {
 });
 'use strict';
 
-function employeeCardController(storage) {
+function employeeCardController(storage, timeout) {
     var ctrl = this;
 
     ctrl.$onInit = function () {
-        $('#phone').mask('+7(999)999-9999');
+        ctrl.closing = 'false';
         if (ctrl.data) {
-            ctrl.toDelete = 'employee' + ctrl.data.name;
+            ctrl.toDeletePhone = ctrl.data.phone;
             ctrl.isUpdating = true;
         } else {
             ctrl.isUpdating = false;
@@ -512,38 +404,52 @@ function employeeCardController(storage) {
             }
         }
     };
+    ctrl.handleSelectedChange = function (text, mode) {
+        ctrl.data[mode] = text;
+    };
+
+    ctrl.$onPhoneChange = function () {
+        if (ctrl.data.phone) {
+            var numeric = ctrl.data.phone.replace(/[^\d]/, '').replace(/ /g, '').replace(/\(/g, '').replace(/\)/g, '');
+            if (numeric[0] === '8') {
+                numeric = numeric.slice(1, numeric.length);
+            }
+            if (numeric.length > 10) {
+                numeric = numeric.slice(0, 10);
+            }
+            if (numeric.length <= 3) {
+                ctrl.data.phone = '8 (' + numeric;
+            } else if (numeric.length <= 6) {
+                ctrl.data.phone = '8 (' + numeric.slice(0, 3) + ') ' + numeric.slice(3, numeric.length);
+            } else {
+                ctrl.data.phone = '8 (' + numeric.slice(0, 3) + ') ' + numeric.slice(3, 6) + ' ' + numeric.slice(6, numeric.length);
+            }
+        }
+    };
 
     ctrl.save = function () {
-        if (ctrl.isUpdating) {
-            storage.deleteEntity(ctrl.toDelete);
+        if (ctrl.isUpdating && ctrl.data.phone !== ctrl.toDeletePhone) {
+            storage.deleteEntity('employee' + ctrl.toDeletePhone);
         }
-        storage.addEntity('employee' + ctrl.data.name, ctrl.data);
+        var key = 'employee' + ctrl.data.phone;
+        storage.addEntity(key, ctrl.data);
+        var updater = angular.element(document.getElementById('fillDB'));
+        timeout(function () {
+            updater.triggerHandler("click");
+        });
+        ctrl.closing = 'true';
     };
 }
 
 app.component('employeeCard', {
     templateUrl: 'src/employee/employeeCard.html',
-    controller: ['storage', employeeCardController],
+    controller: ['storage', '$timeout', employeeCardController],
     bindings: {
         data: '<',
         departments: '<',
-        positions: '<'
+        positions: '<',
+        mode: '='
     }
-});
-'use strict';
-
-app.directive('employeeCardDirective', function () {
-    return {
-        restrict: 'E',
-        link: function link(scope) {
-            if (!scope.data.addition) {
-                scope.emp = JSON.parse(scope.data.checked);
-            }
-            $('#phone').mask('+7(999)999-9999');
-            scope.data.addition = false;
-        },
-        templateUrl: 'src/employee/employeeCard.html'
-    };
 });
 'use strict';
 
@@ -551,11 +457,19 @@ function employeeListController() {
     var ctrl = this;
     ctrl.search = {};
 
-    ctrl.$onChanges = function (changes) {};
+    ctrl.$onChanges = function (changes) {
+        if (changes.entities) {
+            log('employee list changed');
+        }
+    };
 
     ctrl.handleSelectChange = function (text) {
         ctrl.data.position = '';
         ctrl.data.departments = '';
+    };
+
+    ctrl.$onInit = function () {
+        log('empl list init!');
     };
 }
 
@@ -605,7 +519,7 @@ app.directive('loading', function ($compile) {
 });
 'use strict';
 
-function positionCardController() {
+function positionCardController(storage, $timeout) {
     var ctrl = this;
 
     ctrl.$onSalaryChanged = function () {
@@ -628,21 +542,25 @@ function positionCardController() {
     };
 
     ctrl.$onInit = function () {
+        ctrl.closing = 'false';
         if (ctrl.data) {
-            ctrl.toDelete = 'position' + ctrl.data.name;
+            ctrl.toDeleteName = ctrl.data.name;
             ctrl.isUpdating = true;
-            log('add to del' + ctrl.toDelete);
         } else {
             ctrl.isUpdating = false;
         }
     };
 
     ctrl.save = function () {
-        if (ctrl.isUpdating) {
-            storage.deleteEntity(ctrl.toDelete);
+        if (ctrl.isUpdating && ctrl.data.name !== ctrl.toDeleteName) {
+            storage.deleteEntity('position' + ctrl.toDeleteName);
         }
-        log('add ' + ctrl.data);
         storage.addEntity('position' + ctrl.data.name, ctrl.data);
+        var updater = angular.element(document.getElementById('fillDB'));
+        $timeout(function () {
+            updater.triggerHandler("click");
+        });
+        ctrl.closing = 'true';
     };
 }
 
@@ -793,77 +711,97 @@ function listToTree(list) {
 }
 'use strict';
 
-/*const DEPARTMENTS = [
-    {
-        name: 'Отдел1',
-        children:[
-            {
-                name: 'Отдел1.1',
-                children: [
-                    {
-                        name: 'Отдел1.1.1'
-                    }
-                ]
-            },
-            {
-                name: 'Отдел1.2'
-            }
-        ]
-    },
-    {
-        name: 'Отдел2'
-    }
-];*/
-
 var DEPARTMENTS = [{
-    name: 'Отдел1'
+    name: 'Маркетинг'
 }, {
-    name: 'Отдел2'
+    name: 'HR'
 }, {
-    name: 'Отдел1.1',
-    parent: 'Отдел1'
+    name: 'Планирование',
+    parent: 'Маркетинг'
 }, {
-    name: 'Отдел1.1.1',
-    parent: 'Отдел1.1'
+    name: 'Техническая поддержка',
+    parent: 'Корпоративный маркетинг'
 }, {
-    name: 'Отдел1.2',
-    parent: 'Отдел1'
+    name: 'Корпоративный маркетинг',
+    parent: 'Маркетинг'
 }];
 var POSITIONS = [{
-    name: 'Должность1',
-    salary: 10500
+    name: 'Генеральный директор',
+    salary: 250000
 }, {
-    name: 'Должность2',
-    salary: 200
+    name: 'HR-менеджер',
+    salary: 70000
 }, {
-    name: 'Должность3',
-    salary: 150000
+    name: 'Маркетолог',
+    salary: 70000
 }, {
-    name: 'Должность4',
-    salary: 3500000
+    name: 'Консультант',
+    salary: 50000
 }];
 var EMPLOYEES = [{
-    name: 'рабочий',
-    date: new Date('2018-03-01'),
-    position: 'Должность2',
-    department: 'Отдел2',
-    phone: '+7(123)456-7890',
+    name: 'Пертов Перт Петрович',
+    date: '2018-03-01',
+    position: 'HR-менеджер',
+    department: 'HR',
+    phone: '8 (998) 898 9898',
     email: 'mail@mail.ru'
 }, {
-    name: 'рабочий2',
+    name: 'Иванов Иван Иванович',
     date: '2018-03-01',
-    position: 'Должность1',
-    department: 'Отдел1',
-    phone: '+7(321)456-7890',
+    position: 'Консультант',
+    department: 'Техническая поддержка',
+    phone: '8 (908) 898 9898',
     email: 'mail3@mail.ru'
 }, {
-    name: 'рабочий1',
+    name: 'Кошкин Константин Константинович',
     date: '2018-03-01',
-    position: 'Должность4',
-    department: 'Отдел1.1',
-    phone: '+7(213)456-7890',
+    position: 'Генеральный директор',
+    department: '',
+    phone: '8 (918) 898 9898',
     email: 'mail2@mail.ru'
 }];
+'use strict';
+
+function searchSelectController() {
+    var ctrl = this;
+
+    ctrl.searchChange = function (text) {
+        ctrl.searchText = { name: text };
+    };
+
+    ctrl.$onInit = function () {
+        ctrl.selectText = ctrl.selected;
+        ctrl.visibility = {};
+        ctrl.visibility.optionsVisible = false;
+    };
+
+    ctrl.$onChanges = function () {};
+
+    ctrl.showOptions = function () {
+        ctrl.visibility.optionsVisible = !ctrl.visibility.optionsVisible;
+    };
+
+    ctrl.handleChoose = function (value) {
+        ctrl.selectText = value;
+        ctrl.selected = value;
+        ctrl.onSelectedChange({ text: value });
+    };
+
+    ctrl.handleTreeClick = function () {
+        ctrl.visibility.optionsVisible = !ctrl.visibility.optionsVisible;
+    };
+}
+
+app.component('searchSelect', {
+    templateUrl: 'src/card/searchSelect/searchSelect.html',
+    controller: searchSelectController,
+    bindings: {
+        options: '<',
+        selected: '@',
+        className: '@',
+        onSelectedChange: '&'
+    }
+});
 'use strict';
 
 app.directive('changeEntity', function ($compile) {
@@ -889,8 +827,55 @@ app.directive('changeEntity', function ($compile) {
 });
 'use strict';
 
+app.filter('groupBy', function () {
+            return function (list, group_by) {
+
+                        var filtered = [];
+                        var prev_item = null;
+                        var group_changed = false;
+                        // this is a new field which is added to each item where we append "_CHANGED"
+                        // to indicate a field change in the list
+                        var new_field = group_by + '_CHANGED';
+
+                        // loop through each item in the list
+                        angular.forEach(list, function (item) {
+
+                                    group_changed = false;
+
+                                    // if not the first item
+                                    if (prev_item !== null) {
+
+                                                // check if the group by field changed
+                                                if (prev_item[group_by] !== item[group_by]) {
+                                                            group_changed = true;
+                                                }
+
+                                                // otherwise we have the first item in the list which is new
+                                    } else {
+                                                group_changed = true;
+                                    }
+
+                                    // if the group changed, then add a new field to the item
+                                    // to indicate this
+                                    item[new_field] = group_changed;
+
+                                    filtered.push(item);
+                                    prev_item = item;
+                        });
+
+                        return filtered;
+            };
+});
+'use strict';
+
 function listController() {
     var ctrl = this;
+
+    ctrl.$onChanges = function (obj) {
+        if (obj.data) {
+            log('list');
+        }
+    };
 }
 
 app.component('list', {
@@ -915,25 +900,40 @@ app.directive('chooseList', function ($compile) {
         link: function link(scope, element, attrs) {
             var list = void 0;
             if (scope.data) {
-                scope.data = JSON.parse(scope.data);
-
+                var data = angular.copy(JSON.parse(scope.data));
+                log('list derictive');
+                log('mode: ' + scope.mode);
                 switch (scope.mode) {
                     case 'employee':
-                        scope.employees = scope.data.employees;
+                        scope.employees = data.employees;
                         list = angular.element('<employee-list entities="employees" search="search" data="{{data}}">');
                         break;
                     case 'department':
-                        scope.departments = scope.data.departments;
+                        scope.departments = data.departments;
                         list = angular.element('<department-list entities="departments" search="search" data="{{data}}">');
                         break;
                     case 'position':
-                        scope.positions = scope.data.positions;
+                        scope.positions = data.positions;
                         list = angular.element('<position-list data="positions" search="search">');
                 }
-
                 element.replaceWith(list);
                 $compile(list)(scope);
             }
+        }
+    };
+});
+'use strict';
+
+app.directive('refreshList', function () {
+    return {
+        restrict: 'A',
+        scope: {
+            refreshList: '@'
+        },
+        link: function link(scope, element, attributes) {
+            scope.$watch('refreshList', function () {
+                if (scope.refreshList === 'true') {}
+            });
         }
     };
 });
@@ -953,6 +953,22 @@ app.component('search', {
     },
     templateUrl: 'src/content/search/search.html',
     controller: searchController
+});
+'use strict';
+
+function optionsController() {
+    var ctrl = this;
+
+    ctrl.$onChanges = function (changes) {};
+}
+
+app.component('options', {
+    templateUrl: 'src/card/searchSelect/options/options.html',
+    controller: optionsController,
+    bindings: {
+        data: '<',
+        search: '@'
+    }
 });
 'use strict';
 

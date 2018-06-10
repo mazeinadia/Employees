@@ -7,7 +7,7 @@ function optionsController() {
 }
 
 app.component('options', {
-    templateUrl: 'src/card/options.html',
+    templateUrl: 'src/card/searchSelect/options/options.html',
     controller: optionsController,
     bindings: {
         data: '<',

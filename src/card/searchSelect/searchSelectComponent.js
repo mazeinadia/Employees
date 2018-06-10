@@ -30,7 +30,7 @@ function searchSelectController() {
 }
 
 app.component('searchSelect', {
-    templateUrl: 'src/card/searchSelect.html',
+    templateUrl: 'src/card/searchSelect/searchSelect.html',
     controller: searchSelectController,
     bindings: {
         options: '<',

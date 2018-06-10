@@ -1,24 +1,30 @@
-function departmentCardController () {
+function departmentCardController (storage, $timeout) {
     let ctrl = this;
 
     ctrl.$onInit = function () {
-        log('in department card');
-        log(ctrl.data);
-        log(ctrl.departments);
-        log(ctrl.data.parent);
+        ctrl.closing = 'false';
         if (ctrl.data){
-            ctrl.toDelete = 'department' + ctrl.data.name;
+            ctrl.toDeleteName = ctrl.data.name;
             ctrl.isUpdating = true;
         } else {
             ctrl.isUpdating = false;
         }
     };
 
+    ctrl.handleSelectedChange = function(text, mode) {
+        ctrl.data[mode] = text;
+    };
+
     ctrl.save = function() {
-        if(ctrl.isUpdating){
-            storage.deleteEntity(ctrl.toDelete)
+        if(ctrl.isUpdating && ctrl.data.name !== ctrl.toDeleteName){
+            storage.deleteEntity('department' + ctrl.toDeleteName)
         }
         storage.addEntity('department' + ctrl.data.name, ctrl.data);
+        let updater = angular.element(document.getElementById('fillDB'));
+        $timeout(function () {
+            updater.triggerHandler("click");
+        });
+        ctrl.closing = 'true';
     }
 }
 
