@@ -313,77 +313,6 @@ app.directive('node', function ($compile) {
 });
 'use strict';
 
-app.directive('division', function ($compile) {
-    return {
-        restrict: 'A',
-        scope: {
-            chosen: '@',
-            division: '@',
-            data: '@'
-        },
-        link: function link(scope, element, attrs) {
-            scope.$watch('chosen', function (value, old) {
-                if (value === 'true') {
-                    update();
-                }
-            }, true);
-
-            scope.$watch('data', function (value) {
-                if (scope.chosen === 'true') {
-                    update();
-                }
-            });
-
-            function update() {
-                log('division -> updt');
-                var content = angular.element(document.getElementById('content'));
-                var newContent = angular.element('<content id="content" mode="{{division}}" data="{{data}}">');
-                content.replaceWith(newContent);
-                $compile(newContent)(scope);
-            }
-        }
-    };
-});
-'use strict';
-
-function divisionListController() {
-    var ctrl = this;
-
-    ctrl.modes = [{
-        value: 'employee',
-        text: 'Сотрудники'
-    }, {
-        value: 'department',
-        text: 'Отделы'
-    }, {
-        value: 'position',
-        text: 'Должности'
-    }];
-    ctrl.isChosen = function (value) {
-        return value === ctrl.division;
-    };
-
-    ctrl.$onInit = function () {
-        ctrl.previousData = ctrl.data;
-    };
-
-    ctrl.$onChanges = function (obj) {
-        log('div list changed, but not data');
-        if (obj.data) {
-            log('divisionList');
-        }
-    };
-}
-
-app.component('divisionList', {
-    templateUrl: 'src/divisions/divisionsList.html',
-    controller: [divisionListController],
-    bindings: {
-        data: '@'
-    }
-});
-'use strict';
-
 function employeeCardController(storage, timeout) {
     var ctrl = this;
 
@@ -480,6 +409,78 @@ app.component('employeeList', {
         data: '@',
         search: '<',
         entities: '<'
+    }
+});
+'use strict';
+
+app.directive('division', function ($compile) {
+    return {
+        restrict: 'A',
+        scope: {
+            chosen: '@',
+            division: '@',
+            data: '@'
+        },
+        link: function link(scope, element, attrs) {
+            scope.$watch('chosen', function (value, old) {
+                if (value === 'true') {
+                    update();
+                }
+            });
+
+            scope.$watch('data', function (value) {
+                if (scope.chosen === 'true') {
+                    update();
+                }
+            });
+
+            function update() {
+                log('division -> updt');
+                var content = angular.element(document.getElementById('content'));
+                var newContent = angular.element('<content id="content" mode="{{division}}" data="{{data}}">');
+                content.replaceWith(newContent);
+                $compile(newContent)(scope);
+            }
+        }
+    };
+});
+'use strict';
+
+function divisionListController() {
+    var ctrl = this;
+
+    ctrl.modes = [{
+        value: 'employee',
+        text: 'Сотрудники'
+    }, {
+        value: 'department',
+        text: 'Отделы'
+    }, {
+        value: 'position',
+        text: 'Должности'
+    }];
+    ctrl.isChosen = function (value) {
+        return value === ctrl.division;
+    };
+
+    ctrl.$onInit = function () {
+        ctrl.previousData = ctrl.data;
+    };
+
+    ctrl.$onChanges = function (obj) {
+        log('div list changed, but not data');
+        if (obj.data) {
+            log('divisionList');
+            log(ctrl.data);
+        }
+    };
+}
+
+app.component('divisionList', {
+    templateUrl: 'src/divisions/divisionsList.html',
+    controller: [divisionListController],
+    bindings: {
+        data: '@'
     }
 });
 'use strict';
@@ -804,6 +805,23 @@ app.component('searchSelect', {
 });
 'use strict';
 
+function searchController() {
+    var ctrl = this;
+
+    ctrl.handleTextChange = function () {
+        ctrl.onTextChange({ text: ctrl.text });
+    };
+}
+
+app.component('search', {
+    bindings: {
+        onTextChange: '&'
+    },
+    templateUrl: 'src/content/search/search.html',
+    controller: searchController
+});
+'use strict';
+
 app.directive('changeEntity', function ($compile) {
     return {
         restrict: 'A',
@@ -921,38 +939,6 @@ app.directive('chooseList', function ($compile) {
             }
         }
     };
-});
-'use strict';
-
-app.directive('refreshList', function () {
-    return {
-        restrict: 'A',
-        scope: {
-            refreshList: '@'
-        },
-        link: function link(scope, element, attributes) {
-            scope.$watch('refreshList', function () {
-                if (scope.refreshList === 'true') {}
-            });
-        }
-    };
-});
-'use strict';
-
-function searchController() {
-    var ctrl = this;
-
-    ctrl.handleTextChange = function () {
-        ctrl.onTextChange({ text: ctrl.text });
-    };
-}
-
-app.component('search', {
-    bindings: {
-        onTextChange: '&'
-    },
-    templateUrl: 'src/content/search/search.html',
-    controller: searchController
 });
 'use strict';
 

@@ -26,7 +26,8 @@ function divisionListController() {
     ctrl.$onChanges = function(obj){
         log('div list changed, but not data');
         if(obj.data) {
-            log('divisionList')
+            log('divisionList');
+            log(ctrl.data)
         }
     };
 }
