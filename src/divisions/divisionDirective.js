@@ -11,7 +11,7 @@ app.directive('division', function ($compile) {
                 if (value === 'true'){
                     update();
                 }
-            }, true);
+            });
 
             scope.$watch('data', function (value) {
                 if(scope.chosen === 'true') {
