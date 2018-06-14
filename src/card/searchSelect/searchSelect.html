@@ -1,9 +1,14 @@
 <div class="search-select">
-    <span>{{$ctrl.selected}}</span>
-    <input type="button" ng-click="$ctrl.showOptions()" id="buttonShow">
-    <div ng-show="$ctrl.visibility.optionsVisible" ng-hide="!$ctrl.visibility.optionsVisible">
+    <div class="input">
+    <span>{{$ctrl.selected}}
+        <button ng-click="$ctrl.showOptions()" id="buttonShow" class="button button__drop-down">
+            <drop-down></drop-down>
+        </button>
+    </span>
+    </div>
+    <div ng-show="$ctrl.visibility.optionsVisible" ng-hide="!$ctrl.visibility.optionsVisible" class="list drop-down__list">
         <search on-text-change="$ctrl.searchChange(text)"></search>
-        <tree search="$ctrl.searchText" data="$ctrl.options" class-name="{{$ctrl.className}}"
+        <tree id="tree" search="$ctrl.searchText" data="$ctrl.options" class-name="{{$ctrl.className}}"
               on-choose="$ctrl.handleChoose(value)"
               ng-click="$ctrl.handleTreeClick()"></tree>
     </div>

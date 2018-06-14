@@ -14,15 +14,14 @@
   grid-column: 1 / 4;
   display: grid;
 }
-#content {
+.list-container {
   grid-row: 1;
   grid-column: 1;
 }
-#card {
+.card-container {
   grid-row: 1;
-  grid-column: 2 / 4;
+  grid-column: 2;
   justify-self: end;
-  width: 100%;
   padding: 10px;
   margin: 10px;
 }

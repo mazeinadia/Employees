@@ -1,0 +1,27 @@
+@media (max-width: 480px) {
+    /*заменить nav -> menu nav*/
+    .nav-menu {
+        display:  block;
+    }
+    .divisions {
+        display: none;
+    }
+    .divisions_drop-down {
+        display: block;
+    }
+    .nav {
+        display: block;
+    }
+    .db-container {
+        display: block;
+    }
+    .db {
+        display: block;
+        width: 100%;
+    }
+    /*db -> menu db*/
+    /*card input -> width 250px;*/
+    .input {
+        width: 90%;
+    }
+}

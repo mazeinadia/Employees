@@ -1,8 +1,10 @@
 <li>
-    <span class="">+</span>
-    <input id="{{member.name}}" type="radio" value="{{member.name}}" name="departments"
-           class="radio">
-    <label for="{{member.name}}">{{member.name}}</label>
-    <button value="+"></button>
+    <pencil></pencil>
+    <div class="entity">
+        <input id="{{member.name}}department" type="radio" value="{{member.name}}" name="departments"
+               class="radio">
+        <label for="{{member.name}}department">{{member.name}}</label>
+        <button class="button">+</button>
+    </div>
     <ul id="node-{{member.name}}-children"></ul>
 </li>

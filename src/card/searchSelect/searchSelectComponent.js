@@ -3,25 +3,22 @@ function searchSelectController() {
 
     ctrl.searchChange = function(text) {
         ctrl.searchText = {name: text};
-
     };
 
     ctrl.$onInit = function () {
-        ctrl.selectText = ctrl.selected;
-        ctrl.visibility = {};
-        ctrl.visibility.optionsVisible = false;
+        //ctrl.selectText = ctrl.selected;
+        ctrl.visibility = {optionsVisible: false}
     };
-
-    ctrl.$onChanges = function () {};
 
     ctrl.showOptions = function () {
         ctrl.visibility.optionsVisible = !ctrl.visibility.optionsVisible
     };
 
     ctrl.handleChoose = function(value) {
-        ctrl.selectText = value;
         ctrl.selected = value;
-        ctrl.onSelectedChange({text: value})
+        ctrl.onSelectedChange({text: value});
+        ctrl.visibility.optionsVisible = false;
+        //angular.element(document.getElementById('tree')).triggerHandler('click');
     };
 
     ctrl.handleTreeClick = function () {

@@ -1,12 +1,18 @@
 
 <div class="nav-container">
-    <division-list data="{{$ctrl.data}}" class="divisions"></division-list>
+    <division-menu ng-click="$ctrl.menuClicked()"></division-menu>
+    <division-list data="{{$ctrl.data}}"
+                   class="{{$ctrl.divisionClass}}"
+                   ng-click="$ctrl.hide()"></division-list>
 </div>
 <div class="db-container">
     <db on-load="$ctrl.getTestData()" on-clear="$ctrl.clearDB()" class="db"></db>
 </div>
 <div id="content-container" class="content-container">
-    <div loading="{{$ctrl.loading}}" ></div>
-    <div id="content"></div>
-    <div id="card"></div>
+    <div class="list-container" id="content">
+        <div loading="{{$ctrl.loading}}" ></div>
+    </div>
+    <div class="card-container">
+        <div id="card"></div>
+    </div>
 </div>

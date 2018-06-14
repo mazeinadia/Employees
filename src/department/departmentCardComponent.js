@@ -11,8 +11,8 @@ function departmentCardController (storage, $timeout) {
         }
     };
 
-    ctrl.handleSelectedChange = function(text, mode) {
-        ctrl.data[mode] = text;
+    ctrl.handleSelectedChange = function(text) {
+        ctrl.data['parent'] = text
     };
 
     ctrl.save = function() {

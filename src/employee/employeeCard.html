@@ -1,11 +1,11 @@
 <div class="card employee-card card-container">
     <form>
         <label for="name" class="fieldLabel">ФИО сотрудника</label>
-        <p><input id="name" type="text" class="name"
+        <p><input id="name" type="text" class="input" autofocus
                   ng-model="$ctrl.data.name" required></p>
 
         <label for="date" class="fieldLabel">Дата приема на работу</label>
-        <p><input id="date" type="date" class="date"
+        <p><input id="date" type="date" class="input"
                   ng-model="$ctrl.data.date" required></p>
 
         <label for="position" class="fieldLabel">Должность</label>
@@ -19,15 +19,16 @@
                           on-selected-change="$ctrl.handleSelectedChange(text, 'department')" required></search-select></p>
 
         <label for="phone" class="fieldLabel">Номер телефона</label>
-        <p><input id="phone" type="text" class="phone" ng-model="$ctrl.data.phone" required
-                  placeholder="8 (xxx) xxx xxxx" ng-change="$ctrl.$onPhoneChange()"></p>
+        <p><input id="phone" type="text" class="input" ng-model="$ctrl.data.phone"
+                  placeholder="8 (xxx) xxx xxxx"
+                  ng-change="$ctrl.$onPhoneChange()" required></p>
 
         <label for="email" class="fieldLabel">E-mail</label>
-        <p><input id="email" type="email" class="email" placeholder="some@example.com"
+        <p><input id="email" type="email" class="input" placeholder="some@example.com"
                   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
                   ng-model="$ctrl.data.email"  required></p>
 
         <input type="submit" ng-click="$ctrl.save()" close-card="{{$ctrl.closing}}"
-               value="Сохранить">
+               value="Сохранить" class="save">
     </form>
 </div>

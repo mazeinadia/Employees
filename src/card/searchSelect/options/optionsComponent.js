@@ -1,9 +1,5 @@
 function optionsController() {
-    let ctrl = this;
-
-    ctrl.$onChanges = function (changes) {
-
-    }
+    let ctrl = this
 }
 
 app.component('options', {

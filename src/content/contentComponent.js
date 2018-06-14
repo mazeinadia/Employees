@@ -1,15 +1,8 @@
 function contentController() {
     let ctrl = this;
 
-    ctrl.$onChanges = function(obj){
-        if(obj.data) {
-            log('content')
-        }
-    };
-
     ctrl.setSearchText = function (text) {
         ctrl.search = {name: text};
-        log('CONTENT search for ' + text);
     }
 }
 

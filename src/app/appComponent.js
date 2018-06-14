@@ -1,4 +1,4 @@
-function appController(scope, storage, q) {
+function appController(storage, $window) {
     let ctrl = this;
 
     ctrl.data = '';
@@ -39,7 +39,6 @@ function appController(scope, storage, q) {
             ctrl.data[mode.value + 's'] = (storage.getAllEntitiesOneType(mode.value));
         });
         ctrl.data = JSON.stringify(ctrl.data);
-        log('app');
     };
 
     ctrl.clearDB = function () {
@@ -48,11 +47,31 @@ function appController(scope, storage, q) {
     };
 
     ctrl.setMode = function(mode) {
-        ctrl.mode = mode;
+        ctrl.mode = mode
+    };
+
+    ctrl.$onInit = function () {
+        ctrl.divisionStyle = 'divisions';
+
+    };
+
+    ctrl.menuClicked = function () {
+        //change division-list class
+        if (ctrl.divisionClass === 'divisions') {
+            ctrl.divisionClass = 'divisions_drop-down'
+        } else {
+            ctrl.divisionClass = 'divisions'
+        }
+    };
+
+    ctrl.hide = function() {
+        if (ctrl.divisionClass === 'divisions_drop-down') {
+            ctrl.divisionClass = 'divisions'
+        }
     }
 }
 
 app.component('appComponent', {
     templateUrl: 'src/app/app.html',
-    controller: ['$scope', 'storage', '$q', appController]
+    controller: appController
 });

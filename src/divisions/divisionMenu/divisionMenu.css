@@ -1,0 +1,17 @@
+.nav-menu{
+    background-color: whitesmoke;
+    width: 35px;
+    height: 35px;
+//margin: 0 0 10px 0;
+    cursor: pointer;
+    position: relative;
+    display: none;
+    border: 1px solid gray;
+}
+.menu__strip{
+    width: 25px;
+    height: 5px;
+    background-color: gray;
+    margin: 5px 5px;
+    position: relative;
+}

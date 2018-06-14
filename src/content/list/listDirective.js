@@ -10,8 +10,6 @@ app.directive('chooseList', function ($compile) {
             let list;
             if (scope.data) {
                 let data = angular.copy(JSON.parse(scope.data));
-                log('list derictive');
-                log('mode: ' + scope.mode);
                 switch (scope.mode) {
                     case 'employee':
                         scope.employees = data.employees;

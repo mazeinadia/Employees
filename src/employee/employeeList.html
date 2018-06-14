@@ -3,13 +3,14 @@
      orderBy:['department', 'name'] |
      groupBy: 'department'"
      class="list list__employee">
-    <div class="list__split-line" ng-show="employee.department_CHANGED"></div>
-    <label ng-show="employee.department_CHANGED">{{employee.department}}</label>
+    <label ng-show="employee.department_CHANGED" class="employee-card__department">{{employee.department}}</label>
     <ul class="list"><li>
         <pencil></pencil>
-        <input id="{{employee.phone}}" type="radio" ng-model="data.checked"
-               change-entity="{{employee}}" mode="employee" data="{{$ctrl.data}}"
-               value="{{employee}}" name="employees" class="radio">
-        <label for="{{employee.phone}}">{{employee.name}}</label>
+        <div class="entity">
+            <input id="{{employee.phone}}" type="radio" ng-model="data.checked"
+                   change-entity="{{employee}}" mode="employee" data="{{$ctrl.data}}"
+                   value="{{employee}}" name="employees" class="radio">
+            <label for="{{employee.phone}}">{{employee.name}}</label>
+        </div>
     </li></ul>
 </div>

@@ -5,7 +5,7 @@ var app = angular.module("app", []);
 var log = console.log;
 'use strict';
 
-function appController(scope, storage, q) {
+function appController(storage, $window) {
     var ctrl = this;
 
     ctrl.data = '';
@@ -42,7 +42,6 @@ function appController(scope, storage, q) {
             ctrl.data[mode.value + 's'] = storage.getAllEntitiesOneType(mode.value);
         });
         ctrl.data = JSON.stringify(ctrl.data);
-        log('app');
     };
 
     ctrl.clearDB = function () {
@@ -53,11 +52,30 @@ function appController(scope, storage, q) {
     ctrl.setMode = function (mode) {
         ctrl.mode = mode;
     };
+
+    ctrl.$onInit = function () {
+        ctrl.divisionStyle = 'divisions';
+    };
+
+    ctrl.menuClicked = function () {
+        //change division-list class
+        if (ctrl.divisionClass === 'divisions') {
+            ctrl.divisionClass = 'divisions_drop-down';
+        } else {
+            ctrl.divisionClass = 'divisions';
+        }
+    };
+
+    ctrl.hide = function () {
+        if (ctrl.divisionClass === 'divisions_drop-down') {
+            ctrl.divisionClass = 'divisions';
+        }
+    };
 }
 
 app.component('appComponent', {
     templateUrl: 'src/app/app.html',
-    controller: ['$scope', 'storage', '$q', appController]
+    controller: appController
 });
 'use strict';
 
@@ -66,7 +84,7 @@ app.directive('card', function ($compile) {
         restrict: 'E',
         scope: {
             mode: '@',
-            entity: '=',
+            entity: '=', //'@',
             data: '@'
         },
         link: function link(scope, element, attrs) {
@@ -92,7 +110,8 @@ app.directive('card', function ($compile) {
                             scope.data = JSON.parse(scope.data);
                             scope.departments = scope.data.departments;
                             scope.departments.push({ name: '' });
-                            card = angular.element('<department-card id="card" data="entity" departments="departments">');
+                            scope.department = angular.copy(scope.entity);
+                            card = angular.element('<department-card id="card" data="department" departments="departments">');
                         } else {
                             card = angular.element('<department-card id="card">');
                         }
@@ -157,15 +176,8 @@ app.directive('addEntity', function ($compile) {
 function contentController() {
     var ctrl = this;
 
-    ctrl.$onChanges = function (obj) {
-        if (obj.data) {
-            log('content');
-        }
-    };
-
     ctrl.setSearchText = function (text) {
         ctrl.search = { name: text };
-        log('CONTENT search for ' + text);
     };
 }
 
@@ -184,20 +196,17 @@ function dbController() {
 
     ctrl.dataIsLoaded = false;
 
-    ctrl.$onChanges = function (obj) {};
-
     ctrl.handleLoad = function () {
-        ctrl.onLoad();
-        log('db load');
+        if (!ctrl.dataIsLoaded) {
+            ctrl.onLoad();
+            ctrl.dataIsLoaded = true;
+        }
     };
 
     ctrl.handleClear = function () {
         if (ctrl.dataIsLoaded) {
             ctrl.onClear();
             ctrl.dataIsLoaded = false;
-            alert('БД очищена');
-        } else {
-            alert('БД уже была очищена');
         }
     };
 }
@@ -207,8 +216,7 @@ app.component('db', {
     controller: dbController,
     bindings: {
         onLoad: '&',
-        onClear: '&' //,
-        //modes: '<'
+        onClear: '&'
     }
 });
 'use strict';
@@ -226,8 +234,8 @@ function departmentCardController(storage, $timeout) {
         }
     };
 
-    ctrl.handleSelectedChange = function (text, mode) {
-        ctrl.data[mode] = text;
+    ctrl.handleSelectedChange = function (text) {
+        ctrl.data['parent'] = text;
     };
 
     ctrl.save = function () {
@@ -256,17 +264,6 @@ app.component('departmentCard', {
 function departmentListController() {
     var ctrl = this;
     ctrl.search = {};
-
-    ctrl.$onChanges = function (changes) {
-        /*if (changes.search) {
-            log('CHANGE search for ' + this.search);
-            log(changes.search['name']);
-        }
-        if (changes.entities) {
-            log('deps');
-            log(ctrl.entities);
-        }*/
-    };
 }
 
 app.component('departmentList', {
@@ -280,10 +277,10 @@ app.component('departmentList', {
 });
 'use strict';
 
-app.directive('node', function ($compile) {
+app.directive('departmentNode', function ($compile) {
     return {
         restrict: 'E',
-        replace: true,
+        terminate: true,
         scope: {
             member: '=',
             data: '@',
@@ -298,9 +295,10 @@ app.directive('node', function ($compile) {
                 content.replaceWith(card);
                 $compile(card)(scope);
             });
-            element.find('input').on('change', function () {
+            element.find('input').on('change', function (event) {
                 var content = angular.element(document.getElementById('card'));
-                var card = angular.element('<card mode="department" data="{{data}}" entity="member">');
+                scope.entity = angular.copy(scope.member);
+                var card = angular.element('<card mode="department" data="{{data}}" entity="entity">');
                 content.replaceWith(card);
                 $compile(card)(scope);
             });
@@ -310,6 +308,65 @@ app.directive('node', function ($compile) {
             }
         }
     };
+});
+'use strict';
+
+app.directive('division', function ($compile) {
+    return {
+        restrict: 'A',
+        scope: {
+            chosen: '@',
+            division: '@',
+            data: '@'
+        },
+        link: function link(scope, element, attrs) {
+            scope.$watch('chosen', function (value, old) {
+                if (value === 'true') {
+                    update();
+                }
+            });
+
+            scope.$watch('data', function (value) {
+                if (scope.chosen === 'true') {
+                    update();
+                }
+            });
+
+            function update() {
+                var content = angular.element(document.getElementById('content'));
+                var newContent = angular.element('<content id="content" mode="{{division}}" data="{{data}}">');
+                content.replaceWith(newContent);
+                $compile(newContent)(scope);
+            }
+        }
+    };
+});
+'use strict';
+
+function divisionListController() {
+    var ctrl = this;
+
+    ctrl.modes = [{
+        value: 'employee',
+        text: 'Сотрудники'
+    }, {
+        value: 'department',
+        text: 'Отделы'
+    }, {
+        value: 'position',
+        text: 'Должности'
+    }];
+    ctrl.isChosen = function (value) {
+        return value === ctrl.division;
+    };
+}
+
+app.component('divisionList', {
+    templateUrl: 'src/divisions/divisionsList.html',
+    controller: [divisionListController],
+    bindings: {
+        data: '@'
+    }
 });
 'use strict';
 
@@ -339,7 +396,7 @@ function employeeCardController(storage, timeout) {
 
     ctrl.$onPhoneChange = function () {
         if (ctrl.data.phone) {
-            var numeric = ctrl.data.phone.replace(/[^\d]/, '').replace(/ /g, '').replace(/\(/g, '').replace(/\)/g, '');
+            var numeric = ctrl.data.phone.replace(/[^0-9.]/g, '');
             if (numeric[0] === '8') {
                 numeric = numeric.slice(1, numeric.length);
             }
@@ -386,19 +443,9 @@ function employeeListController() {
     var ctrl = this;
     ctrl.search = {};
 
-    ctrl.$onChanges = function (changes) {
-        if (changes.entities) {
-            log('employee list changed');
-        }
-    };
-
     ctrl.handleSelectChange = function (text) {
         ctrl.data.position = '';
         ctrl.data.departments = '';
-    };
-
-    ctrl.$onInit = function () {
-        log('empl list init!');
     };
 }
 
@@ -409,78 +456,6 @@ app.component('employeeList', {
         data: '@',
         search: '<',
         entities: '<'
-    }
-});
-'use strict';
-
-app.directive('division', function ($compile) {
-    return {
-        restrict: 'A',
-        scope: {
-            chosen: '@',
-            division: '@',
-            data: '@'
-        },
-        link: function link(scope, element, attrs) {
-            scope.$watch('chosen', function (value, old) {
-                if (value === 'true') {
-                    update();
-                }
-            });
-
-            scope.$watch('data', function (value) {
-                if (scope.chosen === 'true') {
-                    update();
-                }
-            });
-
-            function update() {
-                log('division -> updt');
-                var content = angular.element(document.getElementById('content'));
-                var newContent = angular.element('<content id="content" mode="{{division}}" data="{{data}}">');
-                content.replaceWith(newContent);
-                $compile(newContent)(scope);
-            }
-        }
-    };
-});
-'use strict';
-
-function divisionListController() {
-    var ctrl = this;
-
-    ctrl.modes = [{
-        value: 'employee',
-        text: 'Сотрудники'
-    }, {
-        value: 'department',
-        text: 'Отделы'
-    }, {
-        value: 'position',
-        text: 'Должности'
-    }];
-    ctrl.isChosen = function (value) {
-        return value === ctrl.division;
-    };
-
-    ctrl.$onInit = function () {
-        ctrl.previousData = ctrl.data;
-    };
-
-    ctrl.$onChanges = function (obj) {
-        log('div list changed, but not data');
-        if (obj.data) {
-            log('divisionList');
-            log(ctrl.data);
-        }
-    };
-}
-
-app.component('divisionList', {
-    templateUrl: 'src/divisions/divisionsList.html',
-    controller: [divisionListController],
-    bindings: {
-        data: '@'
     }
 });
 'use strict';
@@ -577,13 +552,6 @@ app.component('positionCard', {
 function positionListController() {
     var ctrl = this;
     ctrl.search = {};
-
-    ctrl.$onChanges = function (changes) {
-        if (changes.search) {
-            log('CHANGE search for ' + this.search);
-            log(changes.search['name']);
-        }
-    };
 }
 
 app.component('positionList', {
@@ -763,6 +731,11 @@ var EMPLOYEES = [{
 }];
 'use strict';
 
+app.component('dropDown', {
+    templateUrl: 'src/card/drop-down/drop-down.html'
+});
+'use strict';
+
 app.component('pencil', {
     templateUrl: 'src/card/pencil/pencil.html'
 });
@@ -776,21 +749,19 @@ function searchSelectController() {
     };
 
     ctrl.$onInit = function () {
-        ctrl.selectText = ctrl.selected;
-        ctrl.visibility = {};
-        ctrl.visibility.optionsVisible = false;
+        //ctrl.selectText = ctrl.selected;
+        ctrl.visibility = { optionsVisible: false };
     };
-
-    ctrl.$onChanges = function () {};
 
     ctrl.showOptions = function () {
         ctrl.visibility.optionsVisible = !ctrl.visibility.optionsVisible;
     };
 
     ctrl.handleChoose = function (value) {
-        ctrl.selectText = value;
         ctrl.selected = value;
         ctrl.onSelectedChange({ text: value });
+        ctrl.visibility.optionsVisible = false;
+        //angular.element(document.getElementById('tree')).triggerHandler('click');
     };
 
     ctrl.handleTreeClick = function () {
@@ -807,23 +778,6 @@ app.component('searchSelect', {
         className: '@',
         onSelectedChange: '&'
     }
-});
-'use strict';
-
-function searchController() {
-    var ctrl = this;
-
-    ctrl.handleTextChange = function () {
-        ctrl.onTextChange({ text: ctrl.text });
-    };
-}
-
-app.component('search', {
-    bindings: {
-        onTextChange: '&'
-    },
-    templateUrl: 'src/content/search/search.html',
-    controller: searchController
 });
 'use strict';
 
@@ -893,12 +847,6 @@ app.filter('groupBy', function () {
 
 function listController() {
     var ctrl = this;
-
-    ctrl.$onChanges = function (obj) {
-        if (obj.data) {
-            log('list');
-        }
-    };
 }
 
 app.component('list', {
@@ -924,8 +872,6 @@ app.directive('chooseList', function ($compile) {
             var list = void 0;
             if (scope.data) {
                 var data = angular.copy(JSON.parse(scope.data));
-                log('list derictive');
-                log('mode: ' + scope.mode);
                 switch (scope.mode) {
                     case 'employee':
                         scope.employees = data.employees;
@@ -947,10 +893,30 @@ app.directive('chooseList', function ($compile) {
 });
 'use strict';
 
-function optionsController() {
+function searchController() {
     var ctrl = this;
 
-    ctrl.$onChanges = function (changes) {};
+    ctrl.handleTextChange = function () {
+        ctrl.onTextChange({ text: ctrl.text });
+    };
+}
+
+app.component('search', {
+    bindings: {
+        onTextChange: '&'
+    },
+    templateUrl: 'src/content/search/search.html',
+    controller: searchController
+});
+'use strict';
+
+app.component('divisionMenu', {
+   templateUrl: 'src/divisions/divisionMenu/divisionMenu.html'
+});
+'use strict';
+
+function optionsController() {
+    var ctrl = this;
 }
 
 app.component('options', {
@@ -976,12 +942,13 @@ app.directive('treeNode', function ($compile) {
         templateUrl: 'src/content/list/tree/node.html',
         link: function link(scope, element, attrs) {
             if (angular.isArray(scope.member.children)) {
-                element.append('<tree data="member.children" search="search" class-name="{{className}}">');
+                element.append('<tree id="tree" data="member.children" search="search" class-name="{{className}}">');
                 $compile(element.contents())(scope);
             }
             element.on('click', function (event) {
                 //choose & close
-                scope.onChoose({ value: event.target.id });
+                var text = event.target.innerText ? event.target.innerText : event.target.id;
+                scope.onChoose({ value: text });
             });
         }
     };

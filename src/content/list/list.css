@@ -4,11 +4,19 @@
 }
 
 .list__employee {
-    margin-left: 40px;
-    border-bottom: 1px solid;
-    width: 300px;
+    margin-left: 40px;;
     margin-top: 10px;
 }
 .position {
     margin-bottom: 10px;
+}
+.entity {
+    display: inline;
+}
+.entity label {
+    cursor: pointer;
+}
+.button {
+    background-color: whitesmoke;
+    cursor: pointer;
 }

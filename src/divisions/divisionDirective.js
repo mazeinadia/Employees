@@ -20,7 +20,6 @@ app.directive('division', function ($compile) {
             });
 
             function update() {
-                log('division -> updt');
                 let content = angular.element(document.getElementById('content'));
                 let newContent = angular.element(
                     '<content id="content" mode="{{division}}" data="{{data}}">'

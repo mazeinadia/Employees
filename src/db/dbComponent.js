@@ -3,22 +3,17 @@ function dbController() {
 
     ctrl.dataIsLoaded = false;
 
-    ctrl.$onChanges = function(obj){
-
-    };
-
     ctrl.handleLoad = function () {
-        ctrl.onLoad();
-        log('db load');
+        if(!ctrl.dataIsLoaded) {
+            ctrl.onLoad();
+            ctrl.dataIsLoaded = true;
+        }
     };
 
     ctrl.handleClear = function () {
         if (ctrl.dataIsLoaded) {
             ctrl.onClear();
             ctrl.dataIsLoaded = false;
-            alert('БД очищена')
-        } else {
-            alert('БД уже была очищена')
         }
     };
 }
@@ -28,7 +23,6 @@ app.component('db', {
     controller: dbController,
     bindings: {
         onLoad: '&',
-        onClear: '&'//,
-        //modes: '<'
+        onClear: '&'
     }
 });

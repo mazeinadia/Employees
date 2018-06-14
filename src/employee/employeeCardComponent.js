@@ -24,7 +24,7 @@ function employeeCardController (storage, timeout) {
 
     ctrl.$onPhoneChange = function () {
         if (ctrl.data.phone) {
-            let numeric = ctrl.data.phone.replace(/[^\d]/, '').replace(/ /g, '').replace(/\(/g, '').replace(/\)/g, '');
+            let numeric = ctrl.data.phone.replace(/[^0-9.]/g, '');
             if (numeric[0] === '8') {
                 numeric = numeric.slice(1, numeric.length);
             }

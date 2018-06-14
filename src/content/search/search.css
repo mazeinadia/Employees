@@ -29,7 +29,8 @@
     width: 50%;
     height: 100%;
     border-bottom: 1px solid gray;
-    -moz-transform: rotate(-45deg);
+    -webkit-transform:  rotate(-45deg);
+    transform: rotate(-45deg);
     margin-left: -33%;
     margin-top: -18%; }
 

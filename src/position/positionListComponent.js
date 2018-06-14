@@ -1,14 +1,6 @@
 function positionListController() {
     let ctrl = this;
-    ctrl.search = {};
-
-    ctrl.$onChanges = function (changes) {
-        if (changes.search) {
-            log('CHANGE search for ' + this.search);
-            log(changes.search['name']);
-        }
-    };
-
+    ctrl.search = {}
 }
 
 app.component('positionList', {

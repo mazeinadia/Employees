@@ -1,7 +1,7 @@
-app.directive('node', function ($compile) {
+app.directive('departmentNode', function ($compile) {
     return {
         restrict: 'E',
-        replace: true,
+        terminate: true,
         scope: {
             member: '=',
             data: '@',
@@ -16,9 +16,10 @@ app.directive('node', function ($compile) {
                 content.replaceWith(card);
                 $compile(card)(scope);
             });
-            element.find('input').on('change', function () {
+            element.find('input').on('change', function (event) {
                 let content = angular.element(document.getElementById('card'));
-                let card = angular.element('<card mode="department" data="{{data}}" entity="member">');
+                scope.entity = angular.copy(scope.member);
+                let card = angular.element('<card mode="department" data="{{data}}" entity="entity">');
                 content.replaceWith(card);
                 $compile(card)(scope);
             });
